@@ -174,14 +174,15 @@ var upload = multer({ storage: storage }).single('file')
 
 router.post('/newcard', (req, res) => {
   
-  console(req.for)
+  
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(500).json(err)
     } else if (err) {
       return res.status(500).json(err)
     }
-    
+    const data =JSON.parse(req.body.data)
+    console.log(data)
     return res.status(200).send(req.file)
 
   })
