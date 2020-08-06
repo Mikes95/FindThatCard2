@@ -1,0 +1,113 @@
+.Logincontainer
+    margin: auto
+    text-align: center
+    height: 500px
+html::-webkit-scrollbar 
+    width: 0px;
+
+.superConteiner
+    position: relative
+    max-width: 400px;
+    margin: auto;
+    padding: auto
+    margin-bottom: 20px
+    .altraCarta
+        background-color: black
+        opacity: 0.6
+        cursor: pointer
+        position: absolute
+        left: 10px
+        right: 0px
+        bottom: 0px
+        top: 0px
+        border-radius: 20px
+        transform: rotate(10deg)
+        transition: transform 1s;
+        z-index: 1; 
+        padding: 10px
+        a
+            position: absolute
+            font-size: 20px
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            color: white
+            right: 5px
+    .altraCarta:hover
+        transform: rotate(20deg)
+    .altraCarta2
+        background-color: black
+        opacity: 0.6
+        cursor: pointer
+        position: absolute
+        left: 10px
+        right: -20px
+        bottom: 0px
+        top: 0px
+        border-radius: 20px
+        transform: rotate(10deg)
+        transition: transform 1s;
+        z-index: 1; 
+        padding: 10px
+        a
+            position: absolute
+            font-size: 20px
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            color: white
+            right: 5px
+    .altraCarta2:hover
+        transform: rotate(20deg)
+.FormContainer
+    z-index: 9 
+    position: relative
+    max-width: 400px;
+    font-size: 18px
+    margin: auto;
+    padding: 30px
+    background-color: white
+    border-radius: 10px
+    margin-top: 80px;
+    border: 1px solid black
+
+
+    .message
+        font-size: 10px
+/* .FormContainer::after 
+  content: "ss";
+  background: black;
+  cursor: pointer
+  width: 360px
+  top: 10px
+  height: 90%
+  border-radius: 20px
+  transform: rotate(30deg)
+  position: absolute;
+  z-index: -1;    */
+.FormContainer::after:hover
+    transform: scale(1.1)
+
+@media screen and (max-width: 480px) 
+    .Homepagecontainer
+ 
+        display: flex
+    
+        flex-flow: column
+
+        .User
+            width: 100%!important
+            .ui.input 
+       
+                width: 80%;
+                margin-left: -35px
+        .BigRow
+            width: 100%
+            flex-flow: column
+            padding: 0px
+            .Token
+                width: 100%!important
+                margin: 0px
+                margin-top: 15px
+            .Small
+                width: 100%!important
+                margin: 0px
+                margin-top: 15px
