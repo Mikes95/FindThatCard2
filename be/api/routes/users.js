@@ -162,28 +162,46 @@ router.post('/refill', async (req, res) => {
 });
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public')
+    req.body.data = JSON.parse(req.body.data)
+    
+    fs.mkdir(path.join('public/SellingCards', req.body.data.username), (err) => {
+      if (err) {
+        return console.error(err);
+      }
+      console.log('Directory created successfully!');
+    })
+    req.body.data['path'] =path.join('public/SellingCards', req.body.data.username)
+    cb(null, path.join('public/SellingCards', req.body.data.username))
   },
   filename: function (req, file, cb) {
+    req.body.data['filename'] = Date.now() + '-' + file.originalname
     cb(null, Date.now() + '-' + file.originalname)
   },
-  
-  
+
+
 })
 var upload = multer({ storage: storage }).single('file')
 
 router.post('/newcard', (req, res) => {
-  
-  
+
+
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(500).json(err)
     } else if (err) {
       return res.status(500).json(err)
     }
-    const data =JSON.parse(req.body.data)
-    console.log(data)
-    return res.status(200).send(req.file)
+    console.log(req.body.data)
+    db.collection('selling-cards').insertOne(req.body.data, function (err, collection) {
+      if (err) throw err;
+      console.log("Record inserted Successfully");
+
+    });
+    return res.status(200).send(JSON.stringify({
+      code: 200,
+      error: false,
+      message: 'Card added successfully',
+    }));
 
   })
 

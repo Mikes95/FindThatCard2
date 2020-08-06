@@ -194,33 +194,28 @@ export const addNewCard = (data, file) => dispatch => {
     },
     body: formData
   })
-    .then(response => response.json())
-    .then(result => {
-      console.log('Success:', result);
+  .then(response => response.json())
+
+  .then(resJson => {
+    dispatch({
+      type: 'END_LOADING',
     })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-/*   fetch(API + '/user/newcard', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'JWT',
-      'Access-Control-Allow-Origin': '*',
-    },
-    body: JSON.stringify(data),
-    mode: 'cors',
+    dispatch({
+      type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+      payload: resJson.message,
+    })
+    if (resJson.error == false) {
+ 
+     /*  window.location = '/dashboard' */
+    }
+    /*  !resJson.error ?
+       dispatch({
+         type: 'LOGIN_SUCCESS',
+         payload: resJson.token
+       }) : '' */
+
+    /* !resJson.error ?
+      window.location = '/homepage' : '' */
+
   })
-    .then(response => response.json())
-
-    .then(resJson => {
-
-      if (resJson.error == false) {
-        dispatch({
-          type: 'SET_USER',
-          payload: resJson.user
-        })
-      }
-
-    }) */
 }

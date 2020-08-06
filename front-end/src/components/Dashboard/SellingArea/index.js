@@ -30,7 +30,10 @@ class SellingArea extends React.Component {
             cardPrice: 1,
             cardCondition: '',
             description: '',
-            file: ''
+            file: '',
+            error: '',
+            errorMessage: ''
+
 
 
 
@@ -74,16 +77,12 @@ class SellingArea extends React.Component {
         let { name, value } = event.target
 
         this.setState({ [name]: value });
+        this.setState({ error: false });
+        this.setState({ errorMessage: '' });
     }
     handleChange2 = (e, { value }) => this.setState({ value })
     sendCards() {
-        var realfile = {
-            'lastMod': this.state.file.lastModified,
-            'lastModDate': this.state.file.lastModifiedDate,
-            'name': this.state.file.name,
-            'size': this.state.file.size,
-            'type': this.state.file.type,
-        }
+
         let data = {
             'username': this.props.user.username,
             'title': this.state.articleTitle,
@@ -93,10 +92,53 @@ class SellingArea extends React.Component {
             'condition': this.state.value,
             'description': this.state.description,
         }
-        /* var formData = new FormData();
-        formData.append('file', this.state.file);
-        formData.append('data', JSON.stringify( data ))
-        console.log('post', formData) */
+        
+
+        if (data.title.length < 1) {
+            console.log('Please insert a title')
+            this.setState({ error: true });
+            this.setState({ errorMessage: 'Please insert a title' });
+            return
+        }
+        else if (data.name.length < 1) {
+            console.log('Please insert a name')
+            this.setState({ error: true });
+            this.setState({ errorMessage: 'Please insert a name' });
+            return
+        }
+        else if (data.brand.length < 1) {
+            console.log('Please choose a brand')
+            this.setState({ error: true });
+            this.setState({ errorMessage: 'Please choose a brand' });
+            return
+        }
+        else if (data.price < 0) {
+            console.log('Please insert a price')
+            this.setState({ error: true });
+            this.setState({ errorMessage: 'Please insert a price' });
+            return
+        }
+        else if (!this.state.value) {
+            console.log('Please choose a condition,',this.state.value)
+            this.setState({ error: true });
+            this.setState({ errorMessage: 'Please choose a condition' });
+            return
+        }
+        else if (data.description.length < 1) {
+            console.log('Please insert a description')
+            this.setState({ error: true });
+            this.setState({ errorMessage: 'Please insert a description' });
+            return
+        }
+        else if (!this.state.file) {
+            console.log('Please choose a file')
+            this.setState({ error: true });
+            this.setState({ errorMessage: 'Please choose a file' });
+            return
+        }
+
+        this.setState({ error: false });
+        this.setState({ errorMessage: '' });
         this.props.addNewCard(data, this.state.file)
     }
     onChangeHandler = event => {
@@ -267,6 +309,13 @@ class SellingArea extends React.Component {
                         accept="image/*"
                     /> */}
                     <input type="file" name="file" onChange={this.onChangeHandler} />
+                    {this.state.error ? <Message
+                        negative
+                        icon='warning sign'
+                        header='Something is missing'
+                        content={this.state.errorMessage}
+                        onDismiss={this.props.closeMessage}
+                    />:''}
                     <Button onClick={this.sendCards}>Submit</Button>
 
                 </Form>

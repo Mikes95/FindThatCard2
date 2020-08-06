@@ -51,7 +51,7 @@ class Header extends React.Component {
 
                 <div className='hamburger'>
 
-                    <Dropdown item icon='wrench' fixed='left'>
+                    <Dropdown item icon='wrench' fixed='right'>
                         <Dropdown.Menu>
                       
                             <Dropdown.Item onClick={this.logOut}>Logout</Dropdown.Item>

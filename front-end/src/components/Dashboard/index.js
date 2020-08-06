@@ -12,7 +12,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
 // Redux
-import { user_detail } from '../../actions'
+import { user_detail ,closeMessage} from '../../actions'
 import { connect } from 'react-redux'
 
 
@@ -128,6 +128,6 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {
-    user_detail
+    user_detail,closeMessage
 
 })(Dashboard);
