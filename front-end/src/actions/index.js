@@ -219,3 +219,39 @@ export const addNewCard = (data, file) => dispatch => {
 
   })
 }
+
+export const card_list = (data) => dispatch => {
+
+  console.log('card_list')
+  dispatch({
+    type: 'START_LOADING',
+  })
+
+  var data = { 'data': data }
+  fetch(API + '/card/cardlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(data),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+
+      dispatch({
+        type: 'SET_CARDS',
+        payload: resJson.items
+      })
+
+      dispatch({
+        type: 'END_LOADING',
+      })
+
+  
+
+    })
+}

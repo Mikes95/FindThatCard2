@@ -6,6 +6,7 @@ import Header from './Header'
 import FooterMenu from './footerMenu'
 import PersonalArea from './PersonalArea'
 import SellingArea from './SellingArea'
+import BuyArea from './BuyArea'
 import { Button, Message, Icon, Input, Form, Dropdown, Menu, Table, Modal, Checkbox, Segment, Loader, Dimmer } from 'semantic-ui-react';
 
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -91,11 +92,16 @@ class Dashboard extends React.Component {
                 <Header></Header>
               
                 <div className='AreaContainer'>
-                {this.props.menu}
+              
                 {this.props.menu == 0 ? 
                     <PersonalArea
                     user = {this.props.user.user}
                     ></PersonalArea>
+                    :''}
+                      {this.props.menu == 1 ? 
+                    <BuyArea
+                    user = {this.props.user.user}
+                    ></BuyArea>
                     :''}
                 {this.props.menu == 2 ? 
                     <SellingArea
