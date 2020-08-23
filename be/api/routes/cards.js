@@ -21,8 +21,57 @@ router.get('/', function (req, res, next) {
 
 router.post('/cardlist', (req, res) => {
 
+
+
+
+
+
+
   const projection = { "_id": 0 };
   let query = {}
+
+  db.collection('selling-cards').find(query, projection)
+    .sort({ name: 1 })
+    .toArray()
+    .then(items => {
+      console.log(`Successfully found ${items.length} documents.`)
+
+      return res.status(200).send(JSON.stringify({
+        code: 200,
+        error: false,
+        message: 'Payment succefull',
+        items: items
+      }));
+    })
+
+
+});
+
+router.post('/searchcardlist', (req, res) => {
+  console.log(req.body)
+  var data = {
+    "brand": req.body.data.brand,
+    "min": req.body.data.min_price,
+    "name": req.body.data.name,
+    "date": new Date().toISOString().
+      replace(/T/, ' ').      // replace T with a space
+      replace(/\..+/, ''),
+    "username": req.body.data.username,
+
+  }
+  console.log(data)
+  db.collection('search_log').insertOne(data, function (err, collection) {
+    if (err) throw err;
+    console.log("Record inserted Successfully");
+
+  });
+
+  const projection = { "_id": 0 };
+  let query = {/* brand : data.brand, */
+  /*   "price": {
+      $lte: 8000000
+    } */
+  }
 
   db.collection('selling-cards').find(query, projection)
     .sort({ name: 1 })

@@ -10,7 +10,14 @@ import 'react-day-picker/lib/style.css';
 
 // Redux
 import { connect } from 'react-redux'
-
+import {
+    Magnifier,
+    GlassMagnifier,
+    SideBySideMagnifier,
+    PictureInPictureMagnifier,
+    MOUSE_ACTIVATION,
+    TOUCH_ACTIVATION
+} from "react-image-magnifiers";
 
 
 
@@ -83,7 +90,14 @@ class SingleCard extends React.Component {
                         </div>
                     </div>
                     <div className="imgContainer">
-                    <Image  src={'http://127.0.0.1:5500/be/api/public/SellingCards/'+this.props.card.username+'/'+this.props.card.filename}  />
+                        {/*  <Image src={'http://127.0.0.1:5500/be/api/public/SellingCards/' + this.props.card.username + '/' + this.props.card.filename} /> */}
+                        <GlassMagnifier
+                            magnifierSize="60%"
+                            allowOverflow={true}
+                            imageSrc={'http://127.0.0.1:5500/be/api/public/SellingCards/' + this.props.card.username + '/' + this.props.card.filename}
+                            imageAlt="Example"
+                            largeImageSrc={'http://127.0.0.1:5500/be/api/public/SellingCards/' + this.props.card.username + '/' + this.props.card.filename} // Optional
+                        />
                     </div>
                 </div>
 

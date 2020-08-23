@@ -7,7 +7,7 @@ import { Checkbox, Radio, Select, TextArea, Button, Message, Image, Input, Form,
 
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { addNewCard, card_list } from '../../../actions'
+import { addNewCard, card_list,search_card_list } from '../../../actions'
 import ACards from './SingleCard'
 // Redux
 import { connect } from 'react-redux'
@@ -42,6 +42,7 @@ class BuyArea extends React.Component {
         }
         this.setOpen = this.setOpen.bind(this)
         this.sendCards = this.sendCards.bind(this)
+        this.search = this.search.bind(this)
 
 
     }
@@ -49,7 +50,16 @@ class BuyArea extends React.Component {
     componentDidMount() {
         this.props.card_list()
     }
-
+    search() {
+        let data = {
+            'name': this.state.cardName,
+            'brand': this.state.cardBrand,
+            'min_price': this.state.cardPrice,
+            'username':this.props.user.username
+        }
+       console.log(data)
+        this.props.search_card_list(data)
+    }
     // called every time a file's `status` changes
     handleChangeStatus = ({ meta, file }, status) => { /* console.log(status, meta, file) */ }
 
@@ -62,13 +72,19 @@ class BuyArea extends React.Component {
         this.setState({ cardBrand: val });
     }
 
-    setOpen(val) {
-        this.setState({ open: val });
+    setOpen() {
+        this.setState({ open: !this.state.open });
     }
 
     handleChangeValue = (e, { value }) => {
 
         this.setState({ refill: value });
+    }
+    handleChangePrice(event) {
+
+        let { name, value } = event.target
+        console.log(name, value)
+        this.setState({ [name]: value });
     }
     handleChange(event) {
 
@@ -97,45 +113,84 @@ class BuyArea extends React.Component {
         return (
 
             <div className="superContainer">
-                <h1>Avaiable cards: <label className='filter'>
-                    <Modal
-                        onClose={() => this.setOpen(false)}
-                        onOpen={() => this.setOpen(true)}
-                        open={this.state.open}
-                        trigger={<Button>Show Modal</Button>}
-                    >
-                        <Modal.Header>Select a Photo</Modal.Header>
-                        <Modal.Content image>
-                        <Form.Group inline>
-                        <label>Card brand</label>
+                <Modal
+                    onClose={this.setOpen}
+
+                    open={this.state.open}
+
+                >
+                    <Modal.Header>Select a Photo</Modal.Header>
+                    <Modal.Content image>
+                        <div className='AllFilter'>
+                            <div className='firstSetting'>
+                                <label>Card's name</label>
+                                <Form.Field
+                                    control={Input}
+                                    /*  label="Card's name" */
+                                    placeholder="Card's name"
+                                    name='cardName'
+                                    onChange={(event) => { this.handleChange(event) }}
+                                    value={this.state.cardName}
+                                /><br />
+                                <label>Min.price: ${this.state.cardPrice}</label>
+                                <Form.Input
+                                    /* label={`Duration: ${this.state.cardPrice}ms `} */
+                                    min={0}
+                                    max={999}
+                                    name='cardPrice'
+                                    onChange={(event) => { this.handleChangePrice(event) }}
+                                    step={1}
+                                    type='range'
+                                    value={this.state.cardPrice}
+                                />
+                            </div>
+                            <div className='secondSetting'>
+                                <Form.Group inline>
+                                    <label>Card brand: {this.state.cardBrand}</label>
 
 
-                        <Image className={this.state.cardBrand == 'Pokémon' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('Pokémon')} src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/1024px-International_Pok%C3%A9mon_logo.svg.png' size='small' />
+                                    <Image className={this.state.cardBrand == 'Pokémon' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('Pokémon')} src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/1024px-International_Pok%C3%A9mon_logo.svg.png' size='small' />
 
-                        <Image className={this.state.cardBrand == 'Yugioh' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('Yugioh')} src='https://i.ibb.co/gRWFPxX/kisspng-yu-gi-oh-power-of-chaos-yugi-the-destiny-yu-gi-o-yu-5ae1602555ef55-960105721524719653352.png' size='small' />
+                                    <Image className={this.state.cardBrand == 'Yugioh' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('Yugioh')} src='https://i.ibb.co/gRWFPxX/kisspng-yu-gi-oh-power-of-chaos-yugi-the-destiny-yu-gi-o-yu-5ae1602555ef55-960105721524719653352.png' size='small' />
 
-                        <Image className={this.state.cardBrand == 'Magic' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('Magic')} src='https://i.ibb.co/fXt8jnx/kisspng-magic-the-gathering-online-dominaria-playing-card-friends-gathering-5b0c43f601e504-904210801.png' size='small' />
+                                    <Image className={this.state.cardBrand == 'Magic' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('Magic')} src='https://i.ibb.co/fXt8jnx/kisspng-magic-the-gathering-online-dominaria-playing-card-friends-gathering-5b0c43f601e504-904210801.png' size='small' />
 
 
-                    </Form.Group>
-                        </Modal.Content>
-                        <Modal.Actions>
-                            <Button color='black' onClick={() => this.setOpen(false)}>
-                                Nope
+                                </Form.Group>
+                            </div>
+                        </div>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='black' onClick={this.setOpen}>
+                            Nope
         </Button>
-                            <Button
-                                content="Yep, that's me"
-                                labelPosition='right'
-                                icon='checkmark'
-                                onClick={() => this.setOpen(false)}
-                                positive
-                            />
-                        </Modal.Actions>
-                    </Modal>
+                        <Button
+                            content="Yep, that's me"
+                            labelPosition='right'
+                            icon='checkmark'
+                            onClick={this.setOpen}
+                            positive
+                        />
+                    </Modal.Actions>
+                </Modal>
+                <h1>Avaiable cards:
+                <label className='filter'>
+                        <div className='smallFilter'>
+                            <p>  Name: {this.state.cardName}<br />
+                                Brand:   {this.state.cardBrand}<br />
+                                Min. price:   {this.state.cardPrice}</p>
+
+
+                        </div>
 
 
 
-                    <Icon name='search' /></label></h1>
+
+
+
+                        <Icon name='search' onClick={this.search} />
+
+                    </label> <Button onClick={() => this.setOpen(true)}>Filter</Button></h1>
 
 
 
@@ -204,12 +259,13 @@ class BuyArea extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        cards: state.user.cards
+        cards: state.user.cards,
+        user: state.user.user
     }
 }
 
 export default connect(mapStateToProps, {
 
-    addNewCard, card_list
+    addNewCard, card_list,search_card_list
 
 })(BuyArea);

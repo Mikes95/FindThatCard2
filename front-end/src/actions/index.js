@@ -255,3 +255,40 @@ export const card_list = (data) => dispatch => {
 
     })
 }
+
+
+export const search_card_list = (data) => dispatch => {
+
+  console.log('search_card_list',data)
+  dispatch({
+    type: 'START_LOADING',
+  })
+
+  var dd = { 'data': data }
+  fetch(API + '/card/searchcardlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(dd),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+
+      dispatch({
+        type: 'SET_CARDS',
+        payload: resJson.items
+      })
+
+      dispatch({
+        type: 'END_LOADING',
+      })
+
+  
+
+    }) 
+}

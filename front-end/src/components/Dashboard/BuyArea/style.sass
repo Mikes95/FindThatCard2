@@ -3,15 +3,35 @@
 .dzu-inputLabelWithFiles
   display: none
 .superContainer 
-  .filter
-    position: absolute
-    right: 20px
+  
+  h1
+    position: relative
+    .filter
+      position: absolute
+      right: 80px
+      top: 0px
+      display: flex
+      .smallFilter
+        font-size: 10px
+        p
+          display: flex
+          flex-flow: column
+      
+      i 
+        cursor: pointer
+        color: $my_gold
     .button
       background-color: $my_gold
       color: white
-    i 
-      cursor: pointer
-      color: $my_gold
+      position: absolute
+      top: 6px
+      right: 0px
+.AllFilter
+  display: flex 
+  .firstSetting
+    width: 200px
+  .secondSetting
+    width: 400px
 .BuyingAreaContainer
   font-family: 'Montserrat', sans-serif
   border-radius: 5px
@@ -23,9 +43,10 @@
     padding: 2px
     cursor: pointer
     
-  .imgSelected
-    border-radius: 5px 
-    background-color: #14213d57
-    /* border: 1px solid black */
+
   .field
       margin-top: 20px!important
+.imgSelected
+    border-radius: 5px!important
+    background-color: #14213d57!important
+    /* border: 1px solid black */
