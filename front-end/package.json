@@ -60,6 +60,7 @@
     "webpack-dev-server": "^2.5.1"
   },
   "dependencies": {
+    "chart.js": "^2.9.3",
     "css-loader": "^2.1.1",
     "emotion": "^7.3.2",
     "html2canvas": "^1.0.0-rc.1",
@@ -69,6 +70,7 @@
     "multer": "^1.4.2",
     "offline-plugin": "^4.8.3",
     "react": "^16.0.0",
+    "react-chartjs-2": "^2.10.0",
     "react-code-splitting": "^1.1.1",
     "react-day-picker": "^7.3.0",
     "react-dom": "^16.0.0",

@@ -51,6 +51,12 @@ const user = (state = INITIAL_STATE, action) => {
         cards: action.payload,
         
       }
+      case 'SET_STATS':
+      return {
+        ...state,
+        stats: action.payload,
+        
+      }
     case 'SET_USER':
       return {
         ...state,

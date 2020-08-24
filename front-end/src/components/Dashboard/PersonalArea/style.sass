@@ -5,18 +5,49 @@
 .PersonalAreaContainer
   width: 100%
   display: flex
+  flex-flow: column
+  position: relative
   .AccountCard
     padding: 10px
     font-size: 16px
     width: 40%
+    border-radius: 5px
+    background-color: white
+    box-shadow: 0px 0px 5px 3px $my_platinum_strong;
+    a
+      cursor: pointer 
+  .stats
+    display: flex
+    margin: auto
+    width: 100%
+    margin-top: 20px
+    margin-bottom: 20px
+    .pesonal
+      padding: 10px
+      margin: auto
+      margin-left: 0px
+      border-radius: 5px
+      background-color: white
+      width: 50%
+      box-shadow: 0px 0px 5px 3px $my_platinum_strong;
+    .global
+      padding: 10px
+      width: 50%
+      margin: auto
+      margin-left: 5px
+      border-radius: 5px
+      background-color: white
+      box-shadow: 0px 0px 5px 3px $my_platinum_strong;
+  .wishlist
+    padding: 10px
     
     border-radius: 5px
     background-color: white
     box-shadow: 0px 0px 5px 3px $my_platinum_strong;
-
-
-    a
-      cursor: pointer 
+    .container
+      display: flex
+      overflow: auto
+      overflow-y: auto
 .paypalcontainer
   max-width: 100px
   height: 30px

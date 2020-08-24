@@ -7,7 +7,7 @@ import { Checkbox, Radio, Select, TextArea, Button, Message, Image, Input, Form,
 
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { addNewCard, card_list,search_card_list } from '../../../actions'
+import { addNewCard, card_list, search_card_list } from '../../../actions'
 import ACards from './SingleCard'
 // Redux
 import { connect } from 'react-redux'
@@ -26,10 +26,11 @@ class BuyArea extends React.Component {
             open: false,
             rechanrgeModal: false,
             refill: 0,
-            cardBrand: 'Pokémon',
+            cardBrand: 'All',
             articleTitle: '',
             cardName: '',
-            cardPrice: 1,
+            cardPrice: 0,
+            maxPrice: 999,
             cardCondition: '',
             description: '',
             file: '',
@@ -54,10 +55,11 @@ class BuyArea extends React.Component {
         let data = {
             'name': this.state.cardName,
             'brand': this.state.cardBrand,
-            'min_price': this.state.cardPrice,
-            'username':this.props.user.username
+            'min_price': parseFloat(this.state.cardPrice),
+            'max_price': parseFloat(this.state.maxPrice),
+            'username': this.props.user.username
         }
-       console.log(data)
+        console.log(data)
         this.props.search_card_list(data)
     }
     // called every time a file's `status` changes
@@ -119,7 +121,7 @@ class BuyArea extends React.Component {
                     open={this.state.open}
 
                 >
-                    <Modal.Header>Select a Photo</Modal.Header>
+                    <Modal.Header>Choose search filter</Modal.Header>
                     <Modal.Content image>
                         <div className='AllFilter'>
                             <div className='firstSetting'>
@@ -132,7 +134,9 @@ class BuyArea extends React.Component {
                                     onChange={(event) => { this.handleChange(event) }}
                                     value={this.state.cardName}
                                 /><br />
-                                <label>Min.price: ${this.state.cardPrice}</label>
+                            </div>
+                            <div className='firstSetting'>
+                                <label>higher than: ${this.state.cardPrice}</label>
                                 <Form.Input
                                     /* label={`Duration: ${this.state.cardPrice}ms `} */
                                     min={0}
@@ -143,10 +147,22 @@ class BuyArea extends React.Component {
                                     type='range'
                                     value={this.state.cardPrice}
                                 />
+                                <label>Lower than: ${this.state.maxPrice}</label>
+                                <Form.Input
+                                    /* label={`Duration: ${this.state.cardPrice}ms `} */
+                                    min={0}
+                                    max={999}
+                                    name='maxPrice'
+                                    onChange={(event) => { this.handleChangePrice(event) }}
+                                    step={1}
+                                    type='range'
+                                    value={this.state.maxPrice}
+                                />
                             </div>
                             <div className='secondSetting'>
                                 <Form.Group inline>
                                     <label>Card brand: {this.state.cardBrand}</label>
+                                    <h1 className={this.state.cardBrand == 'All' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('All')} >ALL</h1>
 
 
                                     <Image className={this.state.cardBrand == 'Pokémon' ? 'imgSelected' : 'imgNotSelected'} onClick={() => this.cardBrand('Pokémon')} src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/1024px-International_Pok%C3%A9mon_logo.svg.png' size='small' />
@@ -173,12 +189,12 @@ class BuyArea extends React.Component {
                         />
                     </Modal.Actions>
                 </Modal>
-                <h1>Avaiable cards:
-                <label className='filter'>
+                <h1>Avaiable cards: {this.props.cards ? this.props.cards.length : 0}
+                    <label className='filter'>
                         <div className='smallFilter'>
                             <p>  Name: {this.state.cardName}<br />
                                 Brand:   {this.state.cardBrand}<br />
-                                Min. price:   {this.state.cardPrice}</p>
+                                {this.state.cardPrice}&ge; price &le;{this.state.maxPrice}</p>
 
 
                         </div>
@@ -188,20 +204,27 @@ class BuyArea extends React.Component {
 
 
 
+
+
+                    </label>
+                    <div class='mio'>
                         <Icon name='search' onClick={this.search} />
+                        <Button onClick={() => this.setOpen(true)}>Filter</Button>
+                    </div>
+                </h1>
 
-                    </label> <Button onClick={() => this.setOpen(true)}>Filter</Button></h1>
 
 
-
-
-                {this.props.cards ? this.props.cards.map(item => {
-                    return (
-                        <ACards
-                            card={item}
-                        />
-                    );
-                }) : ''}
+                <div className='cardsContainer'>
+                    {this.props.cards ? this.props.cards.map(item => {
+                        return (
+                            <ACards
+                                card={item}
+                                user={this.props.user}
+                            />
+                        );
+                    }) : ''}
+                </div>
                 {this.props.messageType == 'error' ?
                     <div className="ErrorMessage">
                         <Modal dimmer={true} size={'tiny'} open={this.props.openMessage} onClose={this.props.closeMessage}>
@@ -266,6 +289,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 
-    addNewCard, card_list,search_card_list
+    addNewCard, card_list, search_card_list
 
 })(BuyArea);

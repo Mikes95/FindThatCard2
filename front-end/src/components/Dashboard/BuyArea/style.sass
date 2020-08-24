@@ -3,12 +3,17 @@
 .dzu-inputLabelWithFiles
   display: none
 .superContainer 
-  
+  .cardsContainer
+    display: flex
+    flex-wrap: wrap
+    width: 100%
+    justify-content: center;
+    margin-bottom: 40px
   h1
     position: relative
     .filter
       position: absolute
-      right: 80px
+      right: 0px
       top: 0px
       display: flex
       .smallFilter
@@ -20,18 +25,26 @@
       i 
         cursor: pointer
         color: $my_gold
-    .button
-      background-color: $my_gold
-      color: white
+    .mio
+      
       position: absolute
-      top: 6px
-      right: 0px
+      top: 0px
+      right: 70px
+      cursor: pointer
+      .button
+        background-color: $my_gold
+        color: white
 .AllFilter
   display: flex 
   .firstSetting
     width: 200px
   .secondSetting
     width: 400px
+    h1
+      width: 160px
+      font-size: 40px 
+      margin: 0px
+      text-align: center
 .BuyingAreaContainer
   font-family: 'Montserrat', sans-serif
   border-radius: 5px

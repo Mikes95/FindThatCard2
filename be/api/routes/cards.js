@@ -51,7 +51,8 @@ router.post('/searchcardlist', (req, res) => {
   console.log(req.body)
   var data = {
     "brand": req.body.data.brand,
-    "min": req.body.data.min_price,
+    "lower": req.body.data.min_price,
+    "hight": req.body.data.max_price,
     "name": req.body.data.name,
     "date": new Date().toISOString().
       replace(/T/, ' ').      // replace T with a space
@@ -67,14 +68,24 @@ router.post('/searchcardlist', (req, res) => {
   });
 
   const projection = { "_id": 0 };
-  let query = {/* brand : data.brand, */
-  /*   "price": {
-      $lte: 8000000
-    } */
+
+  let query = {
+    'price': {
+       $gte :  parseFloat(data.lower), $lte :parseFloat(data.hight)
+    },
+   
+    "name": {'$regex' : new RegExp(data.name, 'i')}
+  }
+  if (data.brand != 'All') {
+    query = {
+      brand: data.brand,
+
+    }
   }
 
+
   db.collection('selling-cards').find(query, projection)
-    .sort({ name: 1 })
+    .sort()
     .toArray()
     .then(items => {
       console.log(`Successfully found ${items.length} documents.`)

@@ -179,7 +179,7 @@ export const payment = (username, money, payment_data) => dispatch => {
 
 
 export const addNewCard = (data, file) => dispatch => {
-  
+
   const formData = new FormData();
   formData.append('data', JSON.stringify(data));
   formData.append('file', file);
@@ -188,36 +188,36 @@ export const addNewCard = (data, file) => dispatch => {
   fetch(API + '/user/newcard', {
     method: 'POST',
     headers: {
-      
+
       Authorization: 'JWT',
       'Access-Control-Allow-Origin': '*',
     },
     body: formData
   })
-  .then(response => response.json())
+    .then(response => response.json())
 
-  .then(resJson => {
-    dispatch({
-      type: 'END_LOADING',
+    .then(resJson => {
+      dispatch({
+        type: 'END_LOADING',
+      })
+      dispatch({
+        type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+        payload: resJson.message,
+      })
+      if (resJson.error == false) {
+
+        /*  window.location = '/dashboard' */
+      }
+      /*  !resJson.error ?
+         dispatch({
+           type: 'LOGIN_SUCCESS',
+           payload: resJson.token
+         }) : '' */
+
+      /* !resJson.error ?
+        window.location = '/homepage' : '' */
+
     })
-    dispatch({
-      type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
-      payload: resJson.message,
-    })
-    if (resJson.error == false) {
- 
-     /*  window.location = '/dashboard' */
-    }
-    /*  !resJson.error ?
-       dispatch({
-         type: 'LOGIN_SUCCESS',
-         payload: resJson.token
-       }) : '' */
-
-    /* !resJson.error ?
-      window.location = '/homepage' : '' */
-
-  })
 }
 
 export const card_list = (data) => dispatch => {
@@ -251,7 +251,7 @@ export const card_list = (data) => dispatch => {
         type: 'END_LOADING',
       })
 
-  
+
 
     })
 }
@@ -259,7 +259,7 @@ export const card_list = (data) => dispatch => {
 
 export const search_card_list = (data) => dispatch => {
 
-  console.log('search_card_list',data)
+  console.log('search_card_list', data)
   dispatch({
     type: 'START_LOADING',
   })
@@ -288,7 +288,73 @@ export const search_card_list = (data) => dispatch => {
         type: 'END_LOADING',
       })
 
-  
 
-    }) 
+
+
+    })
+}
+
+export const add_to_wishlist = (data, username) => dispatch => {
+
+  console.log('wishlist', data, username)
+
+
+  dispatch({
+    type: 'START_LOADING',
+  })
+  var dd = {
+    'data': data,
+    'username': username,
+  }
+  fetch(API + '/user/wishlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(dd),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+
+      dispatch({
+        type: 'SET_USER',
+        payload: resJson.user
+      })
+
+      dispatch({
+        type: 'END_LOADING',
+      })
+      dispatch({
+        type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+        payload: resJson.message,
+      })
+
+
+
+    })
+}
+
+
+export const stats = (username) => dispatch => {
+  console.log('stats', username)
+  fetch(API + '/user/stats' + `?username=${encodeURIComponent(username)}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    mode: 'cors',
+  })
+    .then(response => response.json())
+    .then(resJson => {
+      dispatch({
+        type: 'SET_STATS',
+        payload: resJson.stats
+      })
+    })
 }

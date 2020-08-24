@@ -88,7 +88,7 @@ class SellingArea extends React.Component {
             'title': this.state.articleTitle,
             'name': this.state.cardName,
             'brand': this.state.cardBrand,
-            'price': this.state.cardPrice,
+            'price': parseFloat(this.state.cardPrice),
             'condition': this.state.value,
             'description': this.state.description,
         }
