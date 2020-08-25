@@ -191,7 +191,7 @@ router.post('/newcard', (req, res) => {
     } else if (err) {
       return res.status(500).json(err)
     }
-    console.log(req.body.data)
+
     db.collection('selling-cards').insertOne(req.body.data, function (err, collection) {
       if (err) throw err;
       console.log("Record inserted Successfully");
@@ -215,7 +215,7 @@ router.post('/wishlist', async (req, res) => {
   if (user) {
     /* let wishlist = []
     if (user.wishlist) { wishlist = user.wishlist } */
-    console.log(user.wishlist)
+
     db.collection('registered').update(
       { username: username },
       { $addToSet: { wishlist: req.body.data } }
@@ -244,9 +244,81 @@ router.post('/wishlist', async (req, res) => {
 });
 
 
+router.post('/buy', async (req, res) => {
+  var username = req.body.username;
+
+  let user = await db.collection('registered').findOne({ username: username });
+
+  if (user) {
+    console.log(user.balance, req.body.data.price)
+    if (user.username != req.body.data.username) {
+      if (user.balance > req.body.data.price) {
+        var new_balance = user.balance - req.body.data.price
+        db.collection('registered').updateOne(
+          { "username": username },
+          { $set: { "balance": new_balance } }
+        )
+        db.collection('registered').update(
+          { username: username },
+          { $addToSet: { buyed: req.body.data } }
+        )
+        db.collection('selling-cards').remove({ filename: req.body.data.filename })
+        let utente = await db.collection('registered').findOne({ username: username });
+        let wishlist = utente.wishlist
+        const filterWishlist = wishlist.filter((item) => item.filename !== req.body.data.filename);
+        console.log(filterWishlist)
+        db.collection('registered').updateOne(
+          { "username": username },
+          { $set: { "wishlist": filterWishlist } }
+        )
+        let allCards = await db.collection('selling-cards').find().sort()
+          .toArray();
+        return res.status(200).send(JSON.stringify({
+          code: 200,
+          error: false,
+          message: 'Card buyed',
+          user: user,
+          cards: allCards
+        }));
+      }
+
+      else {
+        let allCards2 = await db.collection('selling-cards').find().sort()
+          .toArray();
+        return res.status(400).send(JSON.stringify({
+          code: 400,
+          error: true,
+          message: 'Not enough balance',
+          cards: allCards2
+        }));
+      }
+    }
+    else {
+      return res.status(400).send(JSON.stringify({
+        code: 400,
+        error: true,
+        message: "You can't buy tour own cards",
+
+      }));
+    }
+  }
+  else {
+    let allCards3 = await db.collection('selling-cards').find().sort()
+      .toArray();
+    return res.status(400).send(JSON.stringify({
+      code: 400,
+      error: true,
+      message: 'Error',
+      cards: allCards3
+    }));
+  }
+
+});
+
+
 router.get('/stats', async (req, res) => {
   var username = req.query.username;
-  console.log('stats')
+
   const projection = { "_id": 0 };
   let query = {
     "username": req.query.username
@@ -254,40 +326,54 @@ router.get('/stats', async (req, res) => {
   let logs = await db.collection('search_log').find(query, projection).sort()
     .toArray();
 
-  if (logs) {
-    var brandAll = 0
-    var brandPokemon = 0
-    var brandYugioh = 0
-    var brandMagic = 0
-    logs.forEach(element => {
-      if (element.brand == 'All') brandAll = brandAll + 1
-      else if (element.brand == 'Pokémon') brandPokemon = brandPokemon + 1
-      else if (element.brand == 'Yugioh') brandYugioh = brandYugioh + 1
-      else if (element.brand == 'Magic') brandMagic = brandMagic + 1
+  var brandAll = 0
+  var brandPokemon = 0
+  var brandYugioh = 0
+  var brandMagic = 0
+  logs.forEach(element => {
+    if (element.brand == 'All') brandAll = brandAll + 1
+    else if (element.brand == 'Pokémon') brandPokemon = brandPokemon + 1
+    else if (element.brand == 'Yugioh') brandYugioh = brandYugioh + 1
+    else if (element.brand == 'Magic') brandMagic = brandMagic + 1
 
-    });
-    let data = {
-      'count': logs.length,
-      'brandAll': brandAll,
-      'brandPokemon': brandPokemon,
-      'brandYugioh': brandYugioh,
-      'brandMagic': brandMagic
+  });
+  let Alllogs = await db.collection('search_log').find().sort()
+    .toArray();
+
+  var AllbrandAll = 0
+  var AllbrandPokemon = 0
+  var AllbrandYugioh = 0
+  var AllbrandMagic = 0
+  Alllogs.forEach(element => {
+    if (element.brand == 'All') AllbrandAll = AllbrandAll + 1
+    else if (element.brand == 'Pokémon') AllbrandPokemon = AllbrandPokemon + 1
+    else if (element.brand == 'Yugioh') AllbrandYugioh = AllbrandYugioh + 1
+    else if (element.brand == 'Magic') AllbrandMagic = AllbrandMagic + 1
+
+  });
+  let data = {
+    'count': logs.length,
+    'brandAll': brandAll,
+    'brandPokemon': brandPokemon,
+    'brandYugioh': brandYugioh,
+    'brandMagic': brandMagic,
+    'global': {
+      'count': Alllogs.length,
+      'brandAll': AllbrandAll,
+      'brandPokemon': AllbrandPokemon,
+      'brandYugioh': AllbrandYugioh,
+      'brandMagic': AllbrandMagic,
     }
-    console.log(logs)
-    return res.status(200).send(JSON.stringify({
-      code: 200,
-      error: false,
-      message: 'Card added to wishlist',
-      stats: data,
-    }));
   }
-  else {
-    return res.status(400).send(JSON.stringify({
-      code: 400,
-      error: true,
-      message: 'Error'
-    }));
-  }
+
+  return res.status(200).send(JSON.stringify({
+    code: 200,
+    error: false,
+    message: 'Card added to wishlist',
+    stats: data,
+  }));
+
+
 
 });
 

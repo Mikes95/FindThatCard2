@@ -177,11 +177,11 @@ class BuyArea extends React.Component {
                         </div>
                     </Modal.Content>
                     <Modal.Actions>
-                        <Button color='black' onClick={this.setOpen}>
+                   {/*      <Button color='black' onClick={this.setOpen}>
                             Nope
-        </Button>
+        </Button> */}
                         <Button
-                            content="Yep, that's me"
+                            content="Close"
                             labelPosition='right'
                             icon='checkmark'
                             onClick={this.setOpen}

@@ -7,7 +7,7 @@ import { Checkbox, Radio, Select, TextArea, Button, Message, Image, Input, Form,
 
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { add_to_wishlist } from '../../../../actions'
+import { add_to_wishlist,buy } from '../../../../actions'
 // Redux
 import { connect } from 'react-redux'
 import {
@@ -25,6 +25,7 @@ class SingleCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            open: false,
             rechanrgeModal: false,
             refill: 0,
             cardBrand: 'Pokémon',
@@ -43,13 +44,23 @@ class SingleCard extends React.Component {
         }
 
         this.add_to_wishlist = this.add_to_wishlist.bind(this)
-
+        this.setOpen = this.setOpen.bind(this)
+        this.buy = this.buy.bind(this)
     }
 
 
 
 
-    add_to_wishlist(){
+    setOpen() {
+        this.setState({ open: !this.state.open });
+    }
+    buy() {
+        console.log('buy', this.props.card, this.props.user.username)
+        this.setOpen()
+        this.props.buy(this.props.card, this.props.user.username)
+    }
+
+    add_to_wishlist() {
         this.props.add_to_wishlist(this.props.card, this.props.user.username)
     }
 
@@ -60,6 +71,40 @@ class SingleCard extends React.Component {
         return (
 
             <div className="singleCards">
+                <Modal
+                    onClose={this.setOpen}
+                    size={'mini'}
+                    open={this.state.open}
+
+                >
+                    <Modal.Header>You are going yo buy:</Modal.Header>
+                    <Modal.Content>
+
+                        <div className="modalContainer">
+                            <b className="description" >Name :</b>
+                            <label className='price'>{this.props.card.name}</label>
+                        </div>
+                        <div className="modalContainer">
+                            <b className="description" >Owner :</b>
+                            <label className='price'>{this.props.card.username}</label>
+                        </div>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='black'
+                        className='wish'
+                        onClick={this.setOpen}>
+                            Nope
+        </Button>
+                        <Button
+                            className='buy'
+                            content="Confirm"
+                            labelPosition='right'
+                            icon='checkmark'
+                            onClick={this.buy}
+                            positive
+                        />
+                    </Modal.Actions>
+                </Modal>
                 <div className="titleContainer">
 
                     <h3>{this.props.card.name}</h3>
@@ -87,11 +132,16 @@ class SingleCard extends React.Component {
                         </div>
 
                         <div className="conditionContainer">
+                            <label className="description" >Owner :</label>
+                            <label className='price'>{this.props.card.username}</label>
+                        </div>
+
+                        <div className="conditionContainer">
                             <label className="description" >Description :</label>
                             <label className='price'>{this.props.card.description}</label>
                         </div>
                         <div className='buttonContainer'>
-                            <Button className='buy'>Buy</Button>
+                            <Button className='buy' onClick={this.setOpen}>Buy</Button>
                             <Button onClick={this.add_to_wishlist} className='wish'>Wishlist</Button>
                         </div>
                     </div>
@@ -126,6 +176,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 
-
+    buy,
     add_to_wishlist
 })(SingleCard);

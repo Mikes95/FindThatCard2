@@ -319,15 +319,16 @@ export const add_to_wishlist = (data, username) => dispatch => {
     .then(response => response.json())
 
     .then(resJson => {
+      if (!resJson.error) {
+        dispatch({
+          type: 'SET_USER',
+          payload: resJson.user
+        })
 
-      dispatch({
-        type: 'SET_USER',
-        payload: resJson.user
-      })
-
-      dispatch({
-        type: 'END_LOADING',
-      })
+        dispatch({
+          type: 'END_LOADING',
+        })
+      }
       dispatch({
         type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
         payload: resJson.message,
@@ -352,9 +353,63 @@ export const stats = (username) => dispatch => {
   })
     .then(response => response.json())
     .then(resJson => {
+      if (!resJson.error) {
+        dispatch({
+          type: 'SET_STATS',
+          payload: resJson.stats
+        })
+      }
+    })
+}
+
+
+
+
+export const buy = (data, username) => dispatch => {
+
+  console.log('buy', data, username)
+
+
+  dispatch({
+    type: 'START_LOADING',
+  })
+  var dd = {
+    'data': data,
+    'username': username,
+  }
+  fetch(API + '/user/buy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(dd),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+      if (!resJson.error) {
+        dispatch({
+          type: 'SET_USER',
+          payload: resJson.user
+        })
+
+        dispatch({
+          type: 'SET_CARDS',
+          payload: resJson.cards
+        })
+      }
       dispatch({
-        type: 'SET_STATS',
-        payload: resJson.stats
+        type: 'END_LOADING',
       })
+      dispatch({
+        type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+        payload: resJson.message,
+      })
+
+
+
     })
 }

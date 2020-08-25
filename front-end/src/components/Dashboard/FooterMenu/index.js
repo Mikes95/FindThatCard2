@@ -43,10 +43,10 @@ class FooterMenu extends React.Component {
 
                 <div className="footerMenu">
                 
-                    <Icon  name='user' onClick={() => this.props.changeMenu(0)}/>
-                    <Icon name='shop' onClick={() => this.props.changeMenu(1)} />
-                    <Icon name='plus' onClick={() => this.props.changeMenu(2)}/>
-                    <Icon name='search' onClick={() => this.props.changeMenu(3)}/>
+                    <Icon  name='user' onClick={() => this.props.changeMenu(0,this.props.user.username)}/>
+                    <Icon name='shop' onClick={() => this.props.changeMenu(1,this.props.user.username)} />
+                    <Icon name='plus' onClick={() => this.props.changeMenu(2,this.props.user.username)}/>
+                    <Icon name='search' onClick={() => this.props.changeMenu(3,this.props.user.username)}/>
                 </div>
         
         )

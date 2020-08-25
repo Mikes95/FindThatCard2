@@ -5,7 +5,7 @@ import { Button, Message, Icon, Input, Form, Dropdown, Menu, Table, Modal, Heade
 import { HorizontalBar } from 'react-chartjs-2';
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { payment, stats } from '../../../actions'
+import { payment, stats,user_detail } from '../../../actions'
 import Wishlist from './Wishlist'
 // Redux
 import { connect } from 'react-redux'
@@ -49,6 +49,7 @@ class PersonalArea extends React.Component {
 
     componentDidMount() {
         this.props.stats(this.props.user.username)
+        this.props.user_detail(this.props.user.username)
     }
 
 
@@ -130,6 +131,7 @@ class PersonalArea extends React.Component {
                             {console.log(this.props.stat)}
                             <p><b>Searched cards: </b> {this.props.stat.count}</p>
                             <HorizontalBar
+                            height="80px"
                                 data={
                                     {
                                         labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
@@ -160,7 +162,9 @@ class PersonalArea extends React.Component {
                                                 // OR //
                                                 beginAtZero: true   // minimum value will be 0.
                                             }
-                                        }]
+                                        }],
+                                        
+                                        
                                     }
                                 }}
                             />
@@ -168,6 +172,48 @@ class PersonalArea extends React.Component {
                     </div>
                     <div className='global'>
                         <h3>Global Stats.</h3>
+                        {this.props.stat ? <div>
+                            {console.log(this.props.stat)}
+                            <p><b>Searched cards: </b> {this.props.stat.global.count}</p>
+                            <HorizontalBar
+                            height="80px"
+                                data={
+                                    {
+                                        labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
+                                        datasets: [
+                                            {
+                                                label: 'My First dataset',
+                                                backgroundColor: "#FCA311 ",
+                                                borderColor: 'rgba(255,99,132,1)',
+                                                borderWidth: 1,
+                                                hoverBackgroundColor: "#FCA311 ",
+                                                hoverBorderColor: 'rgba(255,99,132,1)',
+                                                data: [this.props.stat.global.brandAll, this.props.stat.global.brandPokemon, this.props.stat.global.brandYugioh, this.props.stat.global.brandMagic]
+                                            }
+                                        ]
+
+                                    }
+                                }
+
+                                options={{
+                                    legend: {
+                                        display: false
+                                    },
+                                    scales: {
+                                        xAxes: [{
+                                            display: true,
+                                            ticks: {
+                                                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                                                // OR //
+                                                beginAtZero: true   // minimum value will be 0.
+                                            }
+                                        }],
+                                        
+                                        
+                                    }
+                                }}
+                            />
+                        </div> : ''}
                     </div>
                 </div>
                 <div className='wishlist'>
@@ -198,5 +244,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     payment,
+    user_detail,
     stats
 })(PersonalArea);

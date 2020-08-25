@@ -48,7 +48,7 @@ router.post('/cardlist', (req, res) => {
 });
 
 router.post('/searchcardlist', (req, res) => {
-  console.log(req.body)
+
   var data = {
     "brand": req.body.data.brand,
     "lower": req.body.data.min_price,
@@ -60,7 +60,7 @@ router.post('/searchcardlist', (req, res) => {
     "username": req.body.data.username,
 
   }
-  console.log(data)
+
   db.collection('search_log').insertOne(data, function (err, collection) {
     if (err) throw err;
     console.log("Record inserted Successfully");

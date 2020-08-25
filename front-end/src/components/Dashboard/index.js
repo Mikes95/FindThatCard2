@@ -110,7 +110,9 @@ class Dashboard extends React.Component {
                     :''}
 
                 </div>
-                <FooterMenu></FooterMenu>
+                <FooterMenu
+                user = {this.props.user.user}
+                ></FooterMenu>
                 {
                     this.props.loading ?
                         <Dimmer active inverted>
