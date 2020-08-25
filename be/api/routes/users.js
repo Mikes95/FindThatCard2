@@ -129,7 +129,9 @@ router.post('/refill', async (req, res) => {
     let transactions = []
     if (user.transactions) { transactions = user.transactions }
     transactions.push({
-      "time": Date.now(),
+      "date": new Date().toISOString().
+        replace(/T/, ' ').      // replace T with a space
+        replace(/\..+/, ''),
       "amount": req.body.money,
       "order_id": req.body.payment_data.orderID
     });
@@ -273,6 +275,21 @@ router.post('/buy', async (req, res) => {
         )
         let allCards = await db.collection('selling-cards').find().sort()
           .toArray();
+        var data = {
+          "buyer": username,
+          "seller": req.body.data.username,
+          "card": req.body.data,
+          "amount": req.body.data.price,
+          "ship_to":user.address,
+          "date": new Date().toISOString().
+            replace(/T/, ' ').      // replace T with a space
+            replace(/\..+/, ''),
+        }
+        db.collection('orders').insertOne(data, function (err, collection) {
+          if (err) throw err;
+          console.log("Record inserted Successfully");
+
+        });
         return res.status(200).send(JSON.stringify({
           code: 200,
           error: false,
@@ -374,6 +391,30 @@ router.get('/stats', async (req, res) => {
   }));
 
 
+
+});
+
+
+router.post('/address', async (req, res) => {
+  var username = req.body.username;
+  let user = await db.collection('registered').findOne({ username: username });
+  if (user) {
+    db.collection('registered').updateOne({ username: username }, { $set: { "address":req.body.data } })
+    let new_user = await db.collection('registered').findOne({ username: username });
+    return res.status(200).send(JSON.stringify({
+      code: 200,
+      error: false,
+      message: 'Address saved succefully',
+      user: new_user,
+    }));
+  }
+  else {
+    return res.status(400).send(JSON.stringify({
+      code: 400,
+      error: true,
+      message: 'Error'
+    }));
+  }
 
 });
 

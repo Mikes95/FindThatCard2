@@ -5,7 +5,7 @@ import { Button, Message, Icon, Input, Form, Dropdown, Menu, Table, Modal, Heade
 import { HorizontalBar } from 'react-chartjs-2';
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { payment, stats,user_detail } from '../../../actions'
+import { payment, stats, user_detail,update_address } from '../../../actions'
 import Wishlist from './Wishlist'
 // Redux
 import { connect } from 'react-redux'
@@ -26,18 +26,29 @@ class PersonalArea extends React.Component {
         super(props);
         this.state = {
             rechanrgeModal: false,
-            refill: 0
+            refill: 0,
+            address: this.props.user.address
 
 
 
 
         }
         this.setOpen = this.setOpen.bind(this)
-
+        this.handleChange = this.handleChange.bind(this)
+        this.update_address=this.update_address.bind(this)
 
     }
+    update_address(){
+        this.props.update_address(this.state.address,this.props.user.username )
+    }
 
+    handleChange(event) {
 
+        let { name, value } = event.target
+
+        this.setState({ [name]: value });
+
+    }
     setOpen(val) {
         this.setState({ rechanrgeModal: val });
     }
@@ -119,6 +130,17 @@ class PersonalArea extends React.Component {
                         <div>
                             <p><b>Username: </b> {this.props.user.username}</p>
                             <p><b>Email: </b> {this.props.user.email}</p>
+                            <p><b>Address: </b>
+                                <Input
+
+                                    name='address'
+                                    onChange={(event) => { this.handleChange(event) }}
+                                    value={this.state.address}
+
+                                    placeholder="address"
+
+                                /><Button onClick={this.update_address}>Save</Button>
+                            </p>
                             <p><b>Balance: </b> {this.props.user.balance}    <Icon name='dollar sign' /> <a onClick={() => this.setOpen(true)}>Refill</a></p>
                         </div>
                         : ''}
@@ -131,7 +153,7 @@ class PersonalArea extends React.Component {
                             {console.log(this.props.stat)}
                             <p><b>Searched cards: </b> {this.props.stat.count}</p>
                             <HorizontalBar
-                            height="80px"
+                                height="80px"
                                 data={
                                     {
                                         labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
@@ -163,8 +185,8 @@ class PersonalArea extends React.Component {
                                                 beginAtZero: true   // minimum value will be 0.
                                             }
                                         }],
-                                        
-                                        
+
+
                                     }
                                 }}
                             />
@@ -176,7 +198,7 @@ class PersonalArea extends React.Component {
                             {console.log(this.props.stat)}
                             <p><b>Searched cards: </b> {this.props.stat.global.count}</p>
                             <HorizontalBar
-                            height="80px"
+                                height="80px"
                                 data={
                                     {
                                         labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
@@ -208,8 +230,8 @@ class PersonalArea extends React.Component {
                                                 beginAtZero: true   // minimum value will be 0.
                                             }
                                         }],
-                                        
-                                        
+
+
                                     }
                                 }}
                             />
@@ -245,5 +267,6 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     payment,
     user_detail,
-    stats
+    stats,
+    update_address
 })(PersonalArea);
