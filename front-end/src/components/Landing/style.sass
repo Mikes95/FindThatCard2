@@ -1,32 +1,48 @@
+$bg-color: hsl(256,33,10);
+$dot-color: hsl(256,33,70);
+
+// Dimensions
+$dot-size: 1px;
+$dot-space: 22px;
+html 
+  scroll-behavior: smooth;
+
 
 .Home
 
     height: 100%
     padding: 20px
-    padding-top: 100px
+    padding-top: 10px
     text-align: center
     .container
-      widows: 100%
+      widows: 100% 
       display: flex
       margin-top: 50px
       .one
         width: 33%
         margin: 5px
+        margin-bottom: 3px
         transition: 1s ease
         background-color: #14213d80;
         border-radius: 10px
         /* border: 1px solid #fca311; */
         box-shadow: 0px 0px 11px 1px #14213d;
-        i
-              margin-top: 55px;
-              font-size: 92px;
-        h3
-          font-size: 50px
-          margin-top: -20px
+        a
+          i
+                margin-top: 55px;
+                font-size: 72px;
+                color: #14213d
+          h3
+            font-size: 40px
+            margin-top: -20px
+            color: #14213d
       .one:hover
         background-color: #14213dc4;
-        color: white
+        i,h3
+          color: white!important
     .divider
+      position: absolute;
+      left: calc(50% - 250px);
       img
         width: 500px 
     .descr
@@ -38,6 +54,7 @@
       margin-bottom: 30px
     .loginA
       margin-top: 20px
+      overflow: hidden
       font-size: 40px
       padding: 10px
       background-color: #ffffff7d
@@ -56,9 +73,7 @@
       font-family: 'Montserrat', sans-serif
       
       img
-        width: 400px
-  
-
+        width: 600px
 
 .Home::after 
   content: "";
@@ -71,4 +86,102 @@
   position: absolute;
   z-index: -1;   
 
+.UnderHome
+      font-family: 'Montserrat', sans-serif
+      padding: 0px
+      padding-top: 10px
+      background: radial-gradient(1.5em 6.28571em at 1.95em, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.25) 55%, rgba(255, 255, 255, 0) 55%) 0 0, radial-gradient(1.5em 6.28571em at -0.45em, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.25) 55%, rgba(255, 255, 255, 0) 55%) 1.5em 5.5em, radial-gradient(2.3em 4.57143em at 2.99em, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 55%, rgba(255, 255, 255, 0) 55%) 0 0, radial-gradient(2.3em 4.57143em at -0.69em, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 55%, rgba(255, 255, 255, 0) 55%) 2.3em 4em, radial-gradient(3.5em 6.28571em at 4.55em, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.25) 55%, rgba(255, 255, 255, 0) 55%) 0 0, radial-gradient(3.5em 6.28571em at -1.05em, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.25) 55%, rgba(255, 255, 255, 0) 55%) 3.5em 5.5em, radial-gradient(#fca311, #fca311);
+      background-color: mediumspringgreen;
+      background-size: 1.5em 11em, 1.5em 11em, 2.3em 8em, 2.3em 8em, 3.5em 11em, 3.5em 11em, 100% 100%;
+      background-repeat: repeat;
+      margin-top: 32px;
+      padding-bottom: 70px
+      .buyRow
+        
+        display: flex
+        align-items: center
+        margin: auto
+        /* border: 1px solid black */
+        0px 4px 20px 10px #14213db
+        padding: 20px
+        background-color: white
+        width: 100%
+        margin-top: 70px
+        /* border-radius: 30px */
+        h3
+          font-size: 40px
+        .buyImage
+          
+          text-align: center
+          margin: auto
+          img
+            animation-name: floating; 
+            animation-duration: 3s; 
+            animation-iteration-count: infinite; 
+            animation-timing-function: ease-in-out;
+            height: 300px
+            
+            
+        .buyText
+            margin: auto
+            width: 50%
+            p
+              font-size: 30px
+.footer
+  width: 100%
+  color: white
+  padding: 10px
+  text-align: center
+  background-color: #14213d
+  height: 80px
+  
 
+
+@keyframes floating 
+    0% { transform: translate(0,  0px); } 
+    50%  { transform: translate(0, 15px); } 
+    100%   { transform: translate(0, -0px); }     
+
+
+
+
+
+@media screen and (max-width:900px)
+    .Home
+      width: 100%
+      height: 100vh;
+      .title
+        img
+          width: 90%
+      .divider
+        
+        
+        left: calc(50% - 100px)!important
+        bottom: -30px
+        img
+          width: 200px;
+    .UnderHome
+      margin-top: 0px
+      .buyRow
+          
+          
+          width: 100%
+          
+          h3
+            font-size: 25px!important
+          .buyImage
+            
+            text-align: center
+            margin: auto
+            img
+              
+              height: 100px!important
+              
+              
+          .buyText
+              margin: auto
+              width: 50%
+              p
+                font-size: 16px!important
+
+  

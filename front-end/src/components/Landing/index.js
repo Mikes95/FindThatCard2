@@ -50,37 +50,83 @@ class Landing extends React.Component {
     render() {
 
         return (
-
-            <div className='Home'>
-                <div className='title'>
-                    <img src="logo.png" alt="logo" />
-                </div>
-                <p className='descr'>FindThatCard, the online trading site that allows you to buy and sell cards and related accessories in a simple way.</p>
-                <a className='loginA' href='/login' >Login</a>
-                <div className='container'>
-                    <div className='one'>
-                    <Icon name='shop'></Icon>
-                        <h3>Buy</h3>
+            <div>
+                <div className='Home'>
+                    <div className='title'>
+                        <img src="Senza titolo-1.png" alt="logo" />
                     </div>
-                    <div className='one'>
-                    <Icon name='recycle'></Icon>
-                        <h3>Trade</h3>
+                    <p className='descr'>FindThatCard, the online trading site that allows you to buy and sell cards and related accessories in a simple way.</p>
+                    <a className='loginA' href='/login' >Login</a>
+                    <div className='container'>
+                        <div className='one'>
+                        <a href='#buy'>
+                            <Icon name='shop'></Icon>
+                            <h3>Buy</h3>
+                            </a>
+                        </div>
+                        <div className='one'>
+                        <a href='#trade'>
+                            <Icon name='recycle'></Icon>
+                            <h3>Trade</h3>
+                            </a>
+                        </div>
+                        <div className='one'  >
+                        <a href='#sell'>
+                            <Icon name='dollar'></Icon>
+                            <h3>Sell</h3>
+                            </a>
+                        </div>
                     </div>
-                    <div className='one'>
-                    <Icon name='dollar'></Icon>
-                        <h3>Sell</h3>
+                    <br />
+                    <div className='divider'>
+                        <img src="divider.png" alt="logo" />
                     </div>
                 </div>
-                <br /> 
-                <div className='divider'>
-                    <img src="divider.png" alt="logo" />
+                <div className='UnderHome'>
+                    <div className='buyRow'>
+
+                        <div className='buyImage'id='buy'>
+                            <img src="Charizard.png" alt="logo" />
+                            <h3>Buy</h3>
+                        </div>
+                        <div className='buyText'>
+                            <p>On FindThatCard you can buy whatever card you are looking for. Stay up to date on search trends, and discover all the offers that are right for you</p>
+                        </div>
+                    </div>
+
+
+                    <div className='buyRow' id='trade'>
+
+
+                        <div className='buyText'>
+                            <p>Offer exchanges to whoever you want. create trade ads and wait for some users to accept your proposal</p>
+                        </div>
+
+                        <div className='buyImage'>
+                            <img src="blue.png" alt="logo" />
+                            <h3>Trade</h3>
+                        </div>
+                    </div>
+
+                    <div className='buyRow' id='sell'>
+
+                        <div className='buyImage'>
+                            <img src="magic.png" alt="logo" />
+                            <h3>Sell</h3>
+                        </div>
+                        <div className='buyText'>
+                            <p>Sell ​​your disused cards, or look for a bargain by selling the cards of the moment. just take a picture and upload it</p>
+                        </div>
+                    </div>
+
+
                 </div>
 
-                <div className='Under'>
-                    <h3>ciao</h3>
+                <div className='footer'>
+                    Made with love by Mikees
                 </div>
-
             </div>
+
         )
     }
 }
