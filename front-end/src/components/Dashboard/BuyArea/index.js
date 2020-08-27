@@ -59,7 +59,7 @@ class BuyArea extends React.Component {
             'max_price': parseFloat(this.state.maxPrice),
             'username': this.props.user.username
         }
-        console.log(data)
+     
         this.props.search_card_list(data)
     }
     // called every time a file's `status` changes
@@ -67,7 +67,7 @@ class BuyArea extends React.Component {
 
     // receives array of files that are done uploading when submit button is clicked
     handleSubmit = (files, allFiles) => {
-        console.log(files.map(f => f.meta))
+       
         allFiles.forEach(f => f.remove())
     }
     cardBrand(val) {
@@ -85,7 +85,7 @@ class BuyArea extends React.Component {
     handleChangePrice(event) {
 
         let { name, value } = event.target
-        console.log(name, value)
+        
         this.setState({ [name]: value });
     }
     handleChange(event) {
@@ -102,7 +102,7 @@ class BuyArea extends React.Component {
 
     }
     onChangeHandler = event => {
-        console.log(event.target.files[0])
+       
         this.setState({
             file: event.target.files[0],
 

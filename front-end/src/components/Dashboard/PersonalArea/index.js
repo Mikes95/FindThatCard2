@@ -1,15 +1,20 @@
 import React from 'react'
 import './style.min.css'
-
+import CoinBig from '../Header/CoinBig'
 import { Button, Message, Icon, Input, Form, Dropdown, Menu, Table, Modal, Header, Segment, TableCell, Popup } from 'semantic-ui-react';
 import { HorizontalBar } from 'react-chartjs-2';
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { payment, stats, user_detail,update_address } from '../../../actions'
+import { payment, stats, user_detail, update_address, get_orders, mod_order,open_refill,romove_from_wishlist } from '../../../actions'
 import Wishlist from './Wishlist'
 // Redux
 import { connect } from 'react-redux'
-
+const status = [
+    { key: 1, text: 'paid', value: 'paid' },
+    { key: 2, text: 'processed', value: 'processed' },
+    { key: 3, text: 'shipped', value: 'shipped' },
+    /* { key: 4, text: 'received', value: 'received' } */
+]
 const options = [
     { key: 1, text: '5€', value: 5 },
     { key: 2, text: '10€', value: 10 },
@@ -27,41 +32,69 @@ class PersonalArea extends React.Component {
         this.state = {
             rechanrgeModal: false,
             refill: 0,
-            address: this.props.user.address
-
+            address: this.props.user.address,
+            order: 'seller',
+            status: '',
+            id_mod: ''
 
 
 
         }
         this.setOpen = this.setOpen.bind(this)
         this.handleChange = this.handleChange.bind(this)
-        this.update_address=this.update_address.bind(this)
+        this.update_address = this.update_address.bind(this)
+        this.confirm_received = this.confirm_received.bind(this)
+        this.mod_order_status = this.mod_order_status.bind(this)
 
     }
-    update_address(){
-        this.props.update_address(this.state.address,this.props.user.username )
+
+    confirm_received(id) {
+    
+        this.props.mod_order(this.props.user.username, id, 'received')
+    }
+    mod_order_status(id, status) {
+      
+        this.props.mod_order(this.props.user.username, id, this.state.status)
+        this.setState({ status: '' });
+        this.setState({ id_mod: '' });
+    }
+
+    update_address() {
+        this.props.update_address(this.state.address, this.props.user.username)
     }
 
     handleChange(event) {
 
         let { name, value } = event.target
-
+      
         this.setState({ [name]: value });
 
+    }
+    handleChangeOder(type) {
+        this.setState({ order: type });
     }
     setOpen(val) {
         this.setState({ rechanrgeModal: val });
     }
 
     handleChangeValue = (e, { value }) => {
-        console.log(value)
+       
         this.setState({ refill: value });
     }
 
     componentDidMount() {
         this.props.stats(this.props.user.username)
         this.props.user_detail(this.props.user.username)
+        this.props.get_orders(this.props.user.username)
+        this.props.open_refill(false)
     }
+    handleChangeDrop(event, id) {
+      
+        this.setState({ status: event.value });
+        this.setState({ id_mod: id });
+
+    }
+
 
 
     render() {
@@ -69,22 +102,28 @@ class PersonalArea extends React.Component {
         return (
 
             <div className="PersonalAreaContainer">
-                <Modal
-                    onClose={() => this.setOpen(false)}
-                    onOpen={() => this.setOpen(true)}
-                    open={this.state.rechanrgeModal}
+            {console.log('open_refill',this.props.open_refill)}
+             <Modal
+                    onClose={() => this.props.open_refill(false)}
+                    
+                    open={this.props.refill_modal==true? true: false}
 
                 >
-                    <Modal.Header>Refill balance</Modal.Header>
+                    <Modal.Header>Here you can refill your balance! <br></br>Current balance:<gold>{this.props.user.balance}<Icon name='dollar sign' /></gold></Modal.Header>
                     <Modal.Content image>
 
                         <Modal.Description>
-                            <Header>Default Profile Image</Header>
+
                             <p>
-                                We've found the following gravatar image associated with your e-mail
-                                address.
+                                For now, only Paypal is avaiable:  <Dropdown className='pikaDrop' onChange={this.handleChangeValue} clearable options={options} selection />
                             </p>
-                            <p style={{ display: 'flex' }}><Dropdown onChange={this.handleChangeValue} clearable options={options} selection /><div className='paypalcontainer'>
+
+
+
+                            <div className='paypalcontainer'>
+                                <div style={{ marginLeft: '15px', marginBottom: '10px' }}>
+                                    <CoinBig ></CoinBig>
+                                </div>
                                 <PayPalButton
                                     amount={this.state.refill}
                                     locale='en_US'
@@ -97,63 +136,167 @@ class PersonalArea extends React.Component {
                                     }}
                                     onSuccess={(details, data) => {
                                         this.props.payment(this.props.user.username, this.state.refill, data)
-                                        alert("Transaction completed by " + details.payer.name.given_name);
-                                        /* return fetch("/refill", {
-                                            method: "post",
-                                            body: JSON.stringify({
-                                                orderID: data.orderID
-                                            })
-                                        }); */
+                                        alert("Transaction completed by " + details.payer.name.given_name);             
+                                        setTimeout(function () { //Start the timer
+                                            window.location.reload();
+                                        }.bind(this), 1000)
+
                                     }}
                                 />
-                            </div></p>
+
+                            </div>
 
                         </Modal.Description>
 
                     </Modal.Content>
-                    {/*                  <Modal.Actions>
-                        <Button color='black' onClick={() => this.setOpen(false)}>
-                            Nope
-                        </Button>
-                        <Button
-                            content="Yep, that's me"
-                            labelPosition='right'
-                            icon='checkmark'
-                            onClick={() => this.setOpen(false)}
-                            positive
-                        />
-                    </Modal.Actions> */}
+
                 </Modal>
-                <div className="AccountCard">
-                    <h3>Personal info</h3>
-                    {this.props.user ?
-                        <div>
-                            <p><b>Username: </b> {this.props.user.username}</p>
-                            <p><b>Email: </b> {this.props.user.email}</p>
-                            <p><b>Address: </b>
-                                <Input
+                <div className='stats'>
+               {/*       <div className="AccountCard">
+                        <h3>Personal info</h3>
+                        {this.props.user ?
+                            <div>
+                                <p><b>Username: </b> {this.props.user.username}</p>
+                                <p><b>Email: </b> {this.props.user.email}</p>
+                                <p><b>Address: </b>
+                                    <Input
 
-                                    name='address'
-                                    onChange={(event) => { this.handleChange(event) }}
-                                    value={this.state.address}
+                                        name='address'
+                                        onChange={(event) => { this.handleChange(event) }}
+                                        value={this.state.address}
 
-                                    placeholder="address"
+                                        placeholder="address"
 
-                                /><Button onClick={this.update_address}>Save</Button>
-                            </p>
-                            <p><b>Balance: </b> {this.props.user.balance}    <Icon name='dollar sign' /> <a onClick={() => this.setOpen(true)}>Refill</a></p>
-                        </div>
-                        : ''}
+                                    /><Button onClick={this.update_address}>Save</Button>
+                                </p>
+                                <p><b>Balance: </b> {this.props.user.balance}    <Icon name='dollar sign' /> <a onClick={() => this.setOpen(true)}>Refill</a></p>
+                            </div>
+                            : ''}
+                    </div>  */}
+                    <div className="OrdersCard">
+                        <h3>Orders: <a onClick={() => this.handleChangeOder('seller')}>(as Seller) </a>
+                            /
+                        <a onClick={() => this.handleChangeOder('buyer')}> (as Buyer)</a></h3>
+                        {this.state.order == 'seller' ?
+                            <div className="table">
+                                <Table celled>
+                                    <Table.Header>
+                                        <Table.Row>
+                                            <Table.HeaderCell>Date</Table.HeaderCell>
+                                            <Table.HeaderCell>Seller</Table.HeaderCell>
+                                            <Table.HeaderCell>Buyer</Table.HeaderCell>
+                                            <Table.HeaderCell>Price</Table.HeaderCell>
+                                            <Table.HeaderCell>Address</Table.HeaderCell>
+                                            <Table.HeaderCell>Card's name</Table.HeaderCell>
+                                            <Table.HeaderCell>Status</Table.HeaderCell>
+                                            <Table.HeaderCell>Action</Table.HeaderCell>
+                                        </Table.Row>
+                                    </Table.Header>
+
+                                    <Table.Body>
+                                        {this.props.orders ? this.props.orders.as_seller.map((item, index) => {
+
+                                            return (<Table.Row>
+                                                <Table.Cell>{item.date}</Table.Cell>
+                                                <Table.Cell>{item.seller}</Table.Cell>
+                                                <Table.Cell >{item.buyer}</Table.Cell>
+                                                <Table.Cell >{item.amount}</Table.Cell>
+                                                <Table.Cell >{item.ship_to}</Table.Cell>
+                                                <Table.Cell >{item.card.name}</Table.Cell>
+                                                <Table.Cell positive>{item.status == 'received' ? 'received' :
+                                                    <Dropdown
+                                                        clearable
+                                                        options={status}
+                                                        selection
+                                                        name='status'
+                                                        onChange={(e, val) => this.handleChangeDrop(val, item._id)}
+                                                        defaultValue={item.status} />
+                                                }
+                                                </Table.Cell>
+                                                <Table.Cell >
+                                                    <Button
+                                                        disabled={item.status == 'received' ? true : false}
+                                                        style={{
+                                                            backgroundColor: this.state.id_mod == item._id ? '#FCA311' : '',
+                                                            color: this.state.id_mod == item._id ? 'white' : ''
+                                                        }}
+                                                        onClick={() => this.mod_order_status(item._id)}
+                                                        fluid >SAVE</Button>
+                                                </Table.Cell>
+                                            </Table.Row>)
+                                        }) : ''}
+
+                                        {/* <Table.Row positive>
+                                        <Table.Cell>Jimmy</Table.Cell>
+                                        <Table.Cell>
+                                            <Icon name='checkmark' />
+                                            Approved
+                                        </Table.Cell>
+                                        <Table.Cell>None</Table.Cell>
+                                    </Table.Row> */}
+
+
+                                    </Table.Body>
+                                </Table>
+                            </div>
+                            :
+                            <div className="table">
+                                <Table celled>
+                                    <Table.Header>
+                                        <Table.Row>
+                                            <Table.HeaderCell>Date</Table.HeaderCell>
+                                            <Table.HeaderCell>Seller</Table.HeaderCell>
+                                            <Table.HeaderCell>Buyer</Table.HeaderCell>
+                                            <Table.HeaderCell>Price</Table.HeaderCell>
+                                            <Table.HeaderCell>Address</Table.HeaderCell>
+                                            <Table.HeaderCell>Card's name</Table.HeaderCell>
+                                            <Table.HeaderCell>Status</Table.HeaderCell>
+                                            <Table.HeaderCell>Action</Table.HeaderCell>
+                                        </Table.Row>
+                                    </Table.Header>
+
+                                    <Table.Body>
+                                        {this.props.orders ? this.props.orders.as_buyer.map((item, index) => {
+
+                                            return (<Table.Row>
+                                                <Table.Cell>{item.date}</Table.Cell>
+                                                <Table.Cell>{item.seller}</Table.Cell>
+                                                <Table.Cell >{item.buyer}</Table.Cell>
+                                                <Table.Cell >{item.amount}</Table.Cell>
+                                                <Table.Cell >{item.ship_to}</Table.Cell>
+                                                <Table.Cell >{item.card.name}</Table.Cell>
+                                                <Table.Cell positive>{item.status}</Table.Cell>
+                                                <Table.Cell >
+                                                    <Button
+                                                        onClick={() => this.confirm_received(item._id)}
+                                                        fluid >Conrirm received card</Button></Table.Cell>
+                                            </Table.Row>)
+                                        }) : ''}
+
+                                        {/* <Table.Row positive>
+                                        <Table.Cell>Jimmy</Table.Cell>
+                                        <Table.Cell>
+                                            <Icon name='checkmark' />
+                                            Approved
+                                        </Table.Cell>
+                                        <Table.Cell>None</Table.Cell>
+                                    </Table.Row> */}
+
+
+                                    </Table.Body>
+                                </Table>
+                            </div>}
+                    </div>
                 </div>
                 <div className='stats'>
                     <div className='pesonal'>
                         <h3>Personal Stats.</h3>
-                        {console.log(this.props.stat)}
+
                         {this.props.stat ? <div>
-                            {console.log(this.props.stat)}
+
                             <p><b>Searched cards: </b> {this.props.stat.count}</p>
                             <HorizontalBar
-                                height="80px"
+                                height="50px"
                                 data={
                                     {
                                         labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
@@ -195,10 +338,10 @@ class PersonalArea extends React.Component {
                     <div className='global'>
                         <h3>Global Stats.</h3>
                         {this.props.stat ? <div>
-                            {console.log(this.props.stat)}
+
                             <p><b>Searched cards: </b> {this.props.stat.global.count}</p>
                             <HorizontalBar
-                                height="80px"
+                                height="50px"
                                 data={
                                     {
                                         labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
@@ -259,7 +402,9 @@ class PersonalArea extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        stat: state.user.stats
+        stat: state.user.stats,
+        orders: state.user.orders,
+        refill_modal: state.user.open_refill
 
     }
 }
@@ -268,5 +413,8 @@ export default connect(mapStateToProps, {
     payment,
     user_detail,
     stats,
-    update_address
+    update_address,
+    get_orders, mod_order,
+    open_refill,
+    romove_from_wishlist
 })(PersonalArea);

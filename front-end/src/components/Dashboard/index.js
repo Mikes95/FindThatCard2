@@ -13,7 +13,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
 // Redux
-import { user_detail ,closeMessage} from '../../actions'
+import { user_detail, closeMessage, changeMenu } from '../../actions'
 import { connect } from 'react-redux'
 
 
@@ -40,7 +40,9 @@ class Dashboard extends React.Component {
     isPhone() { return window.innerWidth <= 480 }
     isMobile() { return window.innerWidth <= 1024 }
 
-
+    componentDidMount() {
+        this.props.changeMenu(0)
+    }
 
     componentWillMount() {
         let token = localStorage.getItem('token');
@@ -89,29 +91,33 @@ class Dashboard extends React.Component {
                             </div>
                         </Modal>
                     </div>}
-                <Header></Header>
-              
+                {this.props.user.user ?
+                    <Header
+                        user={this.props.user.user}
+                    ></Header> : ''}
+
                 <div className='AreaContainer'>
-              
-                {this.props.menu == 0 ? 
-                    <PersonalArea
-                    user = {this.props.user.user}
-                    ></PersonalArea>
-                    :''}
-                      {this.props.menu == 1 ? 
-                    <BuyArea
-                    user = {this.props.user.user}
-                    ></BuyArea>
-                    :''}
-                {this.props.menu == 2 ? 
-                    <SellingArea
-                    user = {this.props.user.user}
-                    ></SellingArea>
-                    :''}
+
+                    {this.props.menu == 0 ?
+                        this.props.user.user ?
+                            <PersonalArea
+                                user={this.props.user.user}
+                            ></PersonalArea>
+                            : '' : ''}
+                    {this.props.menu == 1 ?
+                        <BuyArea
+                            user={this.props.user.user}
+                        ></BuyArea>
+                        : ''}
+                    {this.props.menu == 2 ?
+                        <SellingArea
+                            user={this.props.user.user}
+                        ></SellingArea>
+                        : ''}
 
                 </div>
                 <FooterMenu
-                user = {this.props.user.user}
+                    user={this.props.user.user}
                 ></FooterMenu>
                 {
                     this.props.loading ?
@@ -136,6 +142,7 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {
-    user_detail,closeMessage
+    user_detail, closeMessage,
+    changeMenu
 
 })(Dashboard);

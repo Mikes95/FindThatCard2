@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 var multer = require('multer')
 const request = require('request')
-
+var { ObjectId } = require('mongodb');
 
 mongoose.connect('mongodb://localhost:27017/findthatcard');
 var db = mongoose.connection;
@@ -133,6 +133,7 @@ router.post('/refill', async (req, res) => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, ''),
       "amount": req.body.money,
+      "status": "paid",
       "order_id": req.body.payment_data.orderID
     });
     if (user.username == username) {
@@ -246,6 +247,35 @@ router.post('/wishlist', async (req, res) => {
 });
 
 
+router.post('/remove-wishlist', async (req, res) => {
+  var username = req.body.username;
+
+  let user = await db.collection('registered').findOne({ username: username });
+
+  if (user) {
+
+    await db.collection('registered').update(
+      { username: username },
+      { $pull: { wishlist: req.body.data } }
+    )
+    var new_user = await db.collection('registered').findOne({ username: username });
+    return res.status(200).send(JSON.stringify({
+      code: 200,
+      error: false,
+      message: 'Card removed from wishlist',
+      user: new_user,
+    }));
+  }
+  else {
+    return res.status(400).send(JSON.stringify({
+      code: 400,
+      error: true,
+      message: 'Error'
+    }));
+  }
+
+});
+
 router.post('/buy', async (req, res) => {
   var username = req.body.username;
 
@@ -266,13 +296,15 @@ router.post('/buy', async (req, res) => {
         )
         db.collection('selling-cards').remove({ filename: req.body.data.filename })
         let utente = await db.collection('registered').findOne({ username: username });
-        let wishlist = utente.wishlist
-        const filterWishlist = wishlist.filter((item) => item.filename !== req.body.data.filename);
-        console.log(filterWishlist)
-        db.collection('registered').updateOne(
-          { "username": username },
-          { $set: { "wishlist": filterWishlist } }
-        )
+        if (utente.wishlist != undefined) {
+          let wishlist = utente.wishlist
+          const filterWishlist = wishlist.filter((item) => item.filename !== req.body.data.filename);
+          console.log(filterWishlist)
+          db.collection('registered').updateOne(
+            { "username": username },
+            { $set: { "wishlist": filterWishlist } }
+          )
+        }
         let allCards = await db.collection('selling-cards').find().sort()
           .toArray();
         var data = {
@@ -280,7 +312,7 @@ router.post('/buy', async (req, res) => {
           "seller": req.body.data.username,
           "card": req.body.data,
           "amount": req.body.data.price,
-          "ship_to":user.address,
+          "ship_to": user.address,
           "date": new Date().toISOString().
             replace(/T/, ' ').      // replace T with a space
             replace(/\..+/, ''),
@@ -399,7 +431,7 @@ router.post('/address', async (req, res) => {
   var username = req.body.username;
   let user = await db.collection('registered').findOne({ username: username });
   if (user) {
-    db.collection('registered').updateOne({ username: username }, { $set: { "address":req.body.data } })
+    db.collection('registered').updateOne({ username: username }, { $set: { "address": req.body.data } })
     let new_user = await db.collection('registered').findOne({ username: username });
     return res.status(200).send(JSON.stringify({
       code: 200,
@@ -413,6 +445,103 @@ router.post('/address', async (req, res) => {
       code: 400,
       error: true,
       message: 'Error'
+    }));
+  }
+
+});
+
+
+router.post('/remove-card', async (req, res) => {
+  var username = req.body.username;
+  let user = await db.collection('registered').findOne({ username: username });
+  var card = await db.collection('selling-cards').findOne({ filename: req.body.data.filename })
+
+  if (username == card.username ||user.admin==true ) {
+
+
+    let removec = await db.collection('selling-cards').remove({ filename: req.body.data.filename })
+    var cards = await db.collection('selling-cards').find().sort()
+      .toArray();
+    return res.status(200).send(JSON.stringify({
+      code: 200,
+      error: false,
+      message: 'Card removed',
+      items: cards
+    }));
+  }
+
+
+});
+
+
+router.post('/orders', async (req, res) => {
+  var username = req.body.username;
+  let orders_ad_seller = await db.collection('orders').find({ 'seller': username }).sort()
+    .toArray();;
+  let orders_ad_buyer = await db.collection('orders').find({ 'buyer': username }).sort()
+    .toArray();;
+
+
+  return res.status(200).send(JSON.stringify({
+    code: 200,
+    error: false,
+    message: 'orders_ad_seller',
+    orders: {
+      'as_seller': orders_ad_seller,
+      'as_buyer': orders_ad_buyer
+    }
+  }));
+
+
+
+});
+
+router.post('/confirm-received', async (req, res) => {
+  var username = req.body.username;
+  var id = req.body.id
+
+  var that_order = await db.collection('orders').findOne(
+    { "_id": ObjectId(req.body.id) });
+  console.log(that_order)
+  if (that_order.status != 'received') {
+
+    if (req.body.status != '' && req.body.status != undefined) {
+      db.collection('orders').findOneAndUpdate(
+        { "_id": ObjectId(req.body.id) },
+        { $set: { "status": req.body.status } }
+      )
+
+      let orders_ad_seller = await db.collection('orders').find({ 'seller': username }).sort()
+        .toArray();;
+      let orders_ad_buyer = await db.collection('orders').find({ 'buyer': username }).sort()
+        .toArray();;
+
+
+      return res.status(200).send(JSON.stringify({
+        code: 200,
+        error: false,
+        message: 'Order status modified: ' + req.body.status,
+        orders: {
+          'as_seller': orders_ad_seller,
+          'as_buyer': orders_ad_buyer
+        }
+      }));
+    }
+    else {
+      return res.status(400).send(JSON.stringify({
+        code: 400,
+        error: true,
+        message: 'Not valid status',
+
+      }));
+    }
+  }
+  else {
+    return res.status(400).send(JSON.stringify({
+      code: 400,
+      error: true,
+      message: 'Cannot modify order status',
+
     }));
   }
 

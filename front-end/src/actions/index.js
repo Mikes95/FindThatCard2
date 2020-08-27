@@ -173,7 +173,10 @@ export const payment = (username, money, payment_data) => dispatch => {
           payload: resJson.user
         })
       }
-
+      dispatch({
+        type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+        payload: resJson.message,
+      })
     })
 }
 
@@ -219,6 +222,40 @@ export const addNewCard = (data, file) => dispatch => {
 
     })
 }
+
+
+export const RemoveCard = (username, card) => dispatch => {
+  console.log('RemoveCard', username, card)
+
+
+  var data = { 'username': username, 'data': card, }
+  fetch(API + '/user/remove-card', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(data),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+
+      if (resJson.error == false) {
+        dispatch({
+          type: 'SET_CARDS',
+          payload: resJson.items
+        })
+      }
+      dispatch({
+        type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+        payload: resJson.message,
+      })
+    })
+}
+
 
 export const card_list = (data) => dispatch => {
 
@@ -339,6 +376,51 @@ export const add_to_wishlist = (data, username) => dispatch => {
     })
 }
 
+export const remove_from_wishlist = (data, username) => dispatch => {
+
+  console.log('remove_from_wishlist', data, username)
+
+
+  dispatch({
+    type: 'START_LOADING',
+  })
+  var dd = {
+    'data': data,
+    'username': username,
+  }
+  fetch(API + '/user/remove-wishlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(dd),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+      if (!resJson.error) {
+        dispatch({
+          type: 'SET_USER',
+          payload: resJson.user
+        })
+
+        dispatch({
+          type: 'END_LOADING',
+        })
+      }
+      dispatch({
+        type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+        payload: resJson.message,
+      })
+
+
+
+    })
+}
+
 
 export const stats = (username) => dispatch => {
   console.log('stats', username)
@@ -413,7 +495,13 @@ export const buy = (data, username) => dispatch => {
 
     })
 }
-
+export const open_refill = (open) => dispatch => {
+  console.log('open_refill')
+  dispatch({
+    type: 'OPEN_REFILL',
+    payload: open
+  })
+}
 
 export const update_address = (data, username) => dispatch => {
 
@@ -456,5 +544,73 @@ export const update_address = (data, username) => dispatch => {
 
 
 
-    }) 
+    })
+}
+
+export const get_orders = (username) => dispatch => {
+  console.log('userdetail')
+
+
+  var data = { 'username': username }
+  fetch(API + '/user/orders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(data),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+
+      if (resJson.error == false) {
+        dispatch({
+          type: 'SET_ORDERS',
+          payload: resJson.orders
+        })
+      }
+
+    })
+}
+
+
+
+export const mod_order = (username, id, status) => dispatch => {
+  console.log('confirm_received')
+
+
+  var data = {
+    'username': username,
+    'id': id,
+    'status': status
+  }
+  fetch(API + '/user/confirm-received', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'JWT',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify(data),
+    mode: 'cors',
+  })
+    .then(response => response.json())
+
+    .then(resJson => {
+
+      if (resJson.error == false) {
+        dispatch({
+          type: 'SET_ORDERS',
+          payload: resJson.orders
+        })
+      }
+      dispatch({
+        type: resJson.error ? 'SET_ERROR' : 'SET_SUCCESS',
+        payload: resJson.message,
+      })
+
+    })
 }

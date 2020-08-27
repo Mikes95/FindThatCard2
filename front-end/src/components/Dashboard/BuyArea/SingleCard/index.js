@@ -7,7 +7,7 @@ import { Checkbox, Radio, Select, TextArea, Button, Message, Image, Input, Form,
 
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { add_to_wishlist,buy } from '../../../../actions'
+import { add_to_wishlist, buy, RemoveCard } from '../../../../actions'
 // Redux
 import { connect } from 'react-redux'
 import {
@@ -46,16 +46,20 @@ class SingleCard extends React.Component {
         this.add_to_wishlist = this.add_to_wishlist.bind(this)
         this.setOpen = this.setOpen.bind(this)
         this.buy = this.buy.bind(this)
+        this.remove = this.remove.bind(this)
     }
 
 
 
-
+    remove() {
+        console.log('remove', this.props.card, this.props.user.username)
+        this.props.RemoveCard(this.props.user.username,this.props.card)
+    }
     setOpen() {
         this.setState({ open: !this.state.open });
     }
     buy() {
-        console.log('buy', this.props.card, this.props.user.username)
+
         this.setOpen()
         this.props.buy(this.props.card, this.props.user.username)
     }
@@ -91,8 +95,8 @@ class SingleCard extends React.Component {
                     </Modal.Content>
                     <Modal.Actions>
                         <Button color='black'
-                        className='wish'
-                        onClick={this.setOpen}>
+                            className='wish'
+                            onClick={this.setOpen}>
                             Nope
         </Button>
                         <Button
@@ -143,6 +147,9 @@ class SingleCard extends React.Component {
                         <div className='buttonContainer'>
                             <Button className='buy' onClick={this.setOpen}>Buy</Button>
                             <Button onClick={this.add_to_wishlist} className='wish'>Wishlist</Button>
+                            {this.props.card.username == this.props.user.username ||  this.props.user.admin ==true?
+                                <Button circular className='wish' > <Icon name='close' onClick={this.remove} /></Button> : ''}
+
                         </div>
                     </div>
                     <div className="imgContainer">
@@ -159,10 +166,7 @@ class SingleCard extends React.Component {
 
 
 
-                {/*   <Icon name='home' size='large' /> */}
-                {
-                    console.log(this.props.card)
-                }
+
             </div>
         )
     }
@@ -177,5 +181,6 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
 
     buy,
-    add_to_wishlist
+    add_to_wishlist,
+    RemoveCard
 })(SingleCard);

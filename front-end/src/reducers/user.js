@@ -31,7 +31,7 @@ const user = (state = INITIAL_STATE, action) => {
       }
 
     case 'LOGIN_SUCCESS':
-    console.log(action.payload)
+
       localStorage.setItem('token', action.payload.token)
       localStorage.setItem('username', action.payload.user.username)
       return {
@@ -65,7 +65,7 @@ const user = (state = INITIAL_STATE, action) => {
 
 
     case 'SET_SUCCESS':
-      console.log(action.payload)
+
       return {
         ...state,
         user: {
@@ -96,8 +96,17 @@ const user = (state = INITIAL_STATE, action) => {
         message: '',
         openMessage: false,
       }
-
-
+      case 'SET_ORDERS':
+      return {
+        ...state,
+        orders: action.payload,
+      }
+      case 'OPEN_REFILL':
+      return {
+        ...state,
+        open_refill: action.payload,
+      }
+      
     default:
       return state
   }
