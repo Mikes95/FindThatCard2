@@ -47,7 +47,8 @@ class PersonalArea extends React.Component {
         this.mod_order_status = this.mod_order_status.bind(this)
 
     }
-
+    isPhone() { return window.innerWidth <= 480 }
+    isMobile() { return window.innerWidth <= 1024 }
     confirm_received(id) {
     
         this.props.mod_order(this.props.user.username, id, 'received')
@@ -295,8 +296,9 @@ class PersonalArea extends React.Component {
                         {this.props.stat ? <div>
 
                             <p><b>Searched cards: </b> {this.props.stat.count}</p>
+                            {console.log(window.innerWidth)}
                             <HorizontalBar
-                                height="50px"
+                                height={window.innerWidth<500? '150px':'50px'}
                                 data={
                                     {
                                         labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
@@ -341,7 +343,7 @@ class PersonalArea extends React.Component {
 
                             <p><b>Searched cards: </b> {this.props.stat.global.count}</p>
                             <HorizontalBar
-                                height="50px"
+                                 height={window.innerWidth<500? '150px':'50px'}
                                 data={
                                     {
                                         labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],

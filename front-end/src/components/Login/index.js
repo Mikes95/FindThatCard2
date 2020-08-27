@@ -47,6 +47,7 @@ class LandingLogin extends React.Component {
         return (
 
             <div className='Home'>
+            <br/><br/>
                 <div className='title'>FindThatCard</div>
 
                 <Login></Login>

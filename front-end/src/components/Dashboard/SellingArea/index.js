@@ -7,7 +7,7 @@ import { Checkbox, Radio, Select, TextArea, Button, Message, Image, Input, Form,
 
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { addNewCard } from '../../../actions'
+import { addNewCard,changeMenu } from '../../../actions'
 // Redux
 import { connect } from 'react-redux'
 
@@ -59,6 +59,7 @@ class SellingArea extends React.Component {
     handleSubmit = (files, allFiles) => {
         console.log(files.map(f => f.meta))
         allFiles.forEach(f => f.remove())
+        
     }
     cardBrand(val) {
         this.setState({ cardBrand: val });
@@ -139,6 +140,7 @@ class SellingArea extends React.Component {
 
         this.setState({ error: false });
         this.setState({ errorMessage: '' });
+        this.props.changeMenu(0)
         this.props.addNewCard(data, this.state.file)
     }
     onChangeHandler = event => {
@@ -316,7 +318,7 @@ class SellingArea extends React.Component {
                         content={this.state.errorMessage}
                         onDismiss={this.props.closeMessage}
                     />:''}
-                    <Button onClick={this.sendCards}>Submit</Button>
+                    <Button fluid onClick={this.sendCards}>Submit</Button>
 
                 </Form>
             </div>
@@ -332,6 +334,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 
-    addNewCard
+    addNewCard,
+    changeMenu
 
 })(SellingArea);
