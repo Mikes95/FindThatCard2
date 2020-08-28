@@ -55,15 +55,15 @@
     width: 100%
     margin-top: 10px
     margin-bottom: 10px
+    cursor: pointer
     .pesonal
-      padding: 10px
-      margin: auto
-      margin-left: 0px
-      margin-right: 5px
-      border-radius: 5px
-      background-color: white
-      width: 50%
-      box-shadow: 0px 0px 5px 3px $my_platinum_strong;
+        width: 50%
+        padding: 10px
+        margin-top: 10px
+        border-radius: 5px
+        background-color: white
+        margin-right: 17px
+        box-shadow: 0px 0px 5px 3px $my_platinum_strong;
     .global
       padding: 10px
       width: 50%
@@ -74,12 +74,14 @@
       box-shadow: 0px 0px 5px 3px $my_platinum_strong;
       b
         font-size: 17px
-  .wishlist
-    padding: 10px
-    margin-top: 10px
-    border-radius: 5px
-    background-color: white
-    box-shadow: 0px 0px 5px 3px $my_platinum_strong;
+    .wishlist
+        margin-left: 17px
+        width: 50%
+        padding: 10px
+        margin-top: 10px
+        border-radius: 5px
+        background-color: white
+        box-shadow: 0px 0px 5px 3px $my_platinum_strong;
     .container
       display: flex
       overflow: auto
@@ -88,7 +90,11 @@
   max-width: 20%
   //height: 30px
   margin: auto;
-  
+.paypalcontainer2
+  max-width: 20%
+  //height: 30px
+  margin-left: 10px;
+   
 
 gold
   color: $my_gold
@@ -97,6 +103,14 @@ gold
 @media screen and (max-width: 480px) 
   .ui.selection.dropdown
     width: 100%
+  .last_p
+    flex-flow: column
+    .paypalcontainer2
+      width: 100%!important
+      max-width: 900px
+      margin-left: 0px
+      z-index: 1
+      margin-top: 10px
   .paypalcontainer
     max-width: 100%
     width: 100%
@@ -140,6 +154,3 @@ gold
     .wishlist
     
       .container
-    
-  .paypalcontainer
-  

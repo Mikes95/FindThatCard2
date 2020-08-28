@@ -22,13 +22,22 @@ router.post('/signup', async (req, res) => {
   var email = req.body.email;
   var pass = req.body.password;
   let user = await db.collection('registered').findOne({ email: email });
+  let user2 = await db.collection('registered').findOne({ username: username });
   if (user) {
     return res.status(400).send(JSON.stringify({
       code: 400,
       error: true,
       message: 'This email is already used'
     }));
-  } else {
+  }
+  else if(user2){
+    return res.status(400).send(JSON.stringify({
+      code: 400,
+      error: true,
+      message: 'This username is already used'
+    }));
+  }
+  else {
     var data = {
       "username": username,
       "email": email,
@@ -62,7 +71,7 @@ router.post('/login', async (req, res) => {
       return res.status(200).send(JSON.stringify({
         code: 200,
         error: false,
-        message: 'Loggato',
+        message: 'Logged In',
         user: user,
         token: nanoid()
       }));
@@ -96,7 +105,7 @@ router.post('/detail', async (req, res) => {
       return res.status(200).send(JSON.stringify({
         code: 200,
         error: false,
-        message: 'Loggato',
+        message: 'Logged In',
         user: user,
         token: nanoid()
       }));

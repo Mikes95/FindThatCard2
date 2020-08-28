@@ -89,54 +89,7 @@ class Header extends React.Component {
 
 
 
-                <Modal
-                    onClose={() => this.setOpenMoney(false)}
-                    onOpen={() => this.setOpenMoney(true)}
-                    open={this.state.rechanrgeModal}
-
-                >
-                    <Modal.Header>Here you can refill your balance: current balance:{this.props.user.balance}</Modal.Header>
-                    <Modal.Content image>
-
-                        <Modal.Description>
-
-                            <p>
-                                For now, only Paypal is avaiable:  <Dropdown className='pikaDrop' onChange={this.handleChangeValue} clearable options={options} selection />
-                            </p>
-
-
-
-                            <div className='paypalcontainer'>
-                                <div style={{ marginLeft: '15px', marginBottom: '10px' }}>
-                                 {/*    <CoinBig ></CoinBig> */}
-                                </div>
-                                <PayPalButton
-                                    amount={this.state.refill}
-                                    locale='en_US'
-                                    style={{
-                                        layout: 'horizontal',
-                                        label: 'buynow',
-                                        branding: 'true',
-                                        tagline: false,
-                                        height: 40
-                                    }}
-                                    onSuccess={(details, data) => {
-                                        this.props.payment(this.props.user.username, this.state.refill, data)
-                                        alert("Transaction completed by " + details.payer.name.given_name);             
-                                        setTimeout(function () { //Start the timer
-                                            window.location.reload();
-                                        }.bind(this), 1000)
-
-                                    }}
-                                />
-
-                            </div>
-
-                        </Modal.Description>
-
-                    </Modal.Content>
-
-                </Modal>
+               
 
 
 

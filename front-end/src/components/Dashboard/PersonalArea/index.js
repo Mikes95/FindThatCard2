@@ -5,7 +5,7 @@ import { Button, Message, Icon, Input, Form, Dropdown, Menu, Table, Modal, Heade
 import { HorizontalBar } from 'react-chartjs-2';
 import { PayPalButton } from "react-paypal-button-v2";
 import 'react-day-picker/lib/style.css';
-import { payment, stats, user_detail, update_address, get_orders, mod_order,open_refill,romove_from_wishlist } from '../../../actions'
+import { payment, stats, user_detail, update_address, get_orders, mod_order, open_refill, romove_from_wishlist } from '../../../actions'
 import Wishlist from './Wishlist'
 // Redux
 import { connect } from 'react-redux'
@@ -34,8 +34,9 @@ class PersonalArea extends React.Component {
             refill: 0,
             address: this.props.user.address,
             order: 'seller',
+            stats: 'global',
             status: '',
-            id_mod: ''
+            id_mod: '',
 
 
 
@@ -50,11 +51,11 @@ class PersonalArea extends React.Component {
     isPhone() { return window.innerWidth <= 480 }
     isMobile() { return window.innerWidth <= 1024 }
     confirm_received(id) {
-    
+
         this.props.mod_order(this.props.user.username, id, 'received')
     }
     mod_order_status(id, status) {
-      
+
         this.props.mod_order(this.props.user.username, id, this.state.status)
         this.setState({ status: '' });
         this.setState({ id_mod: '' });
@@ -67,19 +68,22 @@ class PersonalArea extends React.Component {
     handleChange(event) {
 
         let { name, value } = event.target
-      
+
         this.setState({ [name]: value });
 
     }
     handleChangeOder(type) {
         this.setState({ order: type });
     }
+    handleChangeStats(type) {
+        this.setState({ stats: type });
+    }
     setOpen(val) {
         this.setState({ rechanrgeModal: val });
     }
 
     handleChangeValue = (e, { value }) => {
-       
+
         this.setState({ refill: value });
     }
 
@@ -90,7 +94,7 @@ class PersonalArea extends React.Component {
         this.props.open_refill(false)
     }
     handleChangeDrop(event, id) {
-      
+
         this.setState({ status: event.value });
         this.setState({ id_mod: id });
 
@@ -103,8 +107,8 @@ class PersonalArea extends React.Component {
         return (
 
             <div className="PersonalAreaContainer">
-            {console.log('open_refill',this.props.open_refill)}
-             <Modal
+
+                {/*   <Modal
                     onClose={() => this.props.open_refill(false)}
                     
                     open={this.props.refill_modal==true? true: false}
@@ -151,9 +155,9 @@ class PersonalArea extends React.Component {
 
                     </Modal.Content>
 
-                </Modal>
+                </Modal> */}
                 <div className='stats'>
-               {/*       <div className="AccountCard">
+                    {/*       <div className="AccountCard">
                         <h3>Personal info</h3>
                         {this.props.user ?
                             <div>
@@ -291,112 +295,115 @@ class PersonalArea extends React.Component {
                 </div>
                 <div className='stats'>
                     <div className='pesonal'>
-                        <h3>Personal Stats.</h3>
+                        <h3>Stats:  <a onClick={() => this.handleChangeStats('personal')}>Pesonal </a> / <a onClick={() => this.handleChangeStats('global')}>Global </a></h3>
 
-                        {this.props.stat ? <div>
+                        {this.props.stat ?
+                            this.state.stats == 'personal' ?
+                                <div>
 
-                            <p><b>Searched cards: </b> {this.props.stat.count}</p>
-                            {console.log(window.innerWidth)}
-                            <HorizontalBar
-                                height={window.innerWidth<500? '150px':'50px'}
-                                data={
-                                    {
-                                        labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
-                                        datasets: [
+                                    <p><b>Searched cards: </b> {this.props.stat.count}</p>
+                                    {console.log(window.innerWidth)}
+                                    <HorizontalBar
+                                        height={window.innerWidth < 500 ? '150px' : '100%'}
+                                        data={
                                             {
-                                                label: 'My First dataset',
-                                                backgroundColor: "#FCA311 ",
-                                                borderColor: 'rgba(255,99,132,1)',
-                                                borderWidth: 1,
-                                                hoverBackgroundColor: "#FCA311 ",
-                                                hoverBorderColor: 'rgba(255,99,132,1)',
-                                                data: [this.props.stat.brandAll, this.props.stat.brandPokemon, this.props.stat.brandYugioh, this.props.stat.brandMagic]
+                                                labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
+                                                datasets: [
+                                                    {
+                                                        label: 'My First dataset',
+                                                        backgroundColor: "#FCA311 ",
+                                                        borderColor: 'rgba(255,99,132,1)',
+                                                        borderWidth: 1,
+                                                        hoverBackgroundColor: "#FCA311 ",
+                                                        hoverBorderColor: 'rgba(255,99,132,1)',
+                                                        data: [this.props.stat.brandAll, this.props.stat.brandPokemon, this.props.stat.brandYugioh, this.props.stat.brandMagic]
+                                                    }
+                                                ]
+
                                             }
-                                        ]
+                                        }
 
-                                    }
-                                }
+                                        options={{
+                                            legend: {
+                                                display: false
+                                            },
+                                            scales: {
+                                                xAxes: [{
+                                                    display: true,
+                                                    ticks: {
+                                                        suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                                                        // OR //
+                                                        beginAtZero: true   // minimum value will be 0.
+                                                    }
+                                                }],
 
-                                options={{
-                                    legend: {
-                                        display: false
-                                    },
-                                    scales: {
-                                        xAxes: [{
-                                            display: true,
-                                            ticks: {
-                                                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
-                                                // OR //
-                                                beginAtZero: true   // minimum value will be 0.
+
                                             }
-                                        }],
+                                        }}
+                                    />
+                                </div>
+                                :
+                                <div>
 
-
-                                    }
-                                }}
-                            />
-                        </div> : ''}
-                    </div>
-                    <div className='global'>
-                        <h3>Global Stats.</h3>
-                        {this.props.stat ? <div>
-
-                            <p><b>Searched cards: </b> {this.props.stat.global.count}</p>
-                            <HorizontalBar
-                                 height={window.innerWidth<500? '150px':'50px'}
-                                data={
-                                    {
-                                        labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
-                                        datasets: [
+                                    <p><b>Searched cards: </b> {this.props.stat.global.count}</p>
+                                    <HorizontalBar
+                                        height={window.innerWidth < 500 ? '150px' : '100%'}
+                                        data={
                                             {
-                                                label: 'My First dataset',
-                                                backgroundColor: "#FCA311 ",
-                                                borderColor: 'rgba(255,99,132,1)',
-                                                borderWidth: 1,
-                                                hoverBackgroundColor: "#FCA311 ",
-                                                hoverBorderColor: 'rgba(255,99,132,1)',
-                                                data: [this.props.stat.global.brandAll, this.props.stat.global.brandPokemon, this.props.stat.global.brandYugioh, this.props.stat.global.brandMagic]
+                                                labels: ['All', 'Pokémon', 'Yugioh', 'Magic'],
+                                                datasets: [
+                                                    {
+                                                        label: 'My First dataset',
+                                                        backgroundColor: "#FCA311 ",
+                                                        borderColor: 'rgba(255,99,132,1)',
+                                                        borderWidth: 1,
+                                                        hoverBackgroundColor: "#FCA311 ",
+                                                        hoverBorderColor: 'rgba(255,99,132,1)',
+                                                        data: [this.props.stat.global.brandAll, this.props.stat.global.brandPokemon, this.props.stat.global.brandYugioh, this.props.stat.global.brandMagic]
+                                                    }
+                                                ]
+
                                             }
-                                        ]
+                                        }
 
-                                    }
-                                }
+                                        options={{
+                                            legend: {
+                                                display: false
+                                            },
+                                            scales: {
+                                                xAxes: [{
+                                                    display: true,
+                                                    ticks: {
+                                                        suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                                                        // OR //
+                                                        beginAtZero: true   // minimum value will be 0.
+                                                    }
+                                                }],
 
-                                options={{
-                                    legend: {
-                                        display: false
-                                    },
-                                    scales: {
-                                        xAxes: [{
-                                            display: true,
-                                            ticks: {
-                                                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
-                                                // OR //
-                                                beginAtZero: true   // minimum value will be 0.
+
                                             }
-                                        }],
-
-
-                                    }
-                                }}
-                            />
-                        </div> : ''}
+                                        }}
+                                    />
+                                </div>
+                            : ''}
                     </div>
-                </div>
-                <div className='wishlist'>
-                    <h3>Wishlist</h3>
-                    <div className='container'>
-                        {this.props.user.wishlist ? this.props.user.wishlist.map(item => {
-                            return (
-                                <Wishlist
-                                    card={item}
-                                    user={this.props.user}
-                                />
+                    {this.props.user.wishlist ?
+                    <div className='wishlist'>
+                        <h3>Wishlist</h3>
+                        <div className='container'>
+                            {this.props.user.wishlist ? this.props.user.wishlist.map(item => {
+                                return (
+                                    <Wishlist
+                                        card={item}
+                                        user={this.props.user}
+                                    />
 
-                            );
-                        }) : ''}
-                    </div>
+                                );
+                            }) : ''}
+                        </div>
+                    </div> : ''}
                 </div>
+                
             </div>
         )
     }
