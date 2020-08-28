@@ -13,11 +13,10 @@
 
 
 ## Table of Contents
-- [Clone](#installation)
+- [Clone](#Clone)
 - [Setup](#features)
-- [Features](#contributing)
-- [Team](#team)
-- [FAQ](#faq)
+- [Features](#Features)
+- [Technologies](#Technologies)
 
 ---
 
@@ -82,7 +81,7 @@ Once published, the cards will be available and visible to all. and everyone can
 
 
 
-## Used technologies
+## Technologies
 #### Back-End:
 [![INSERT YOUR GRAPHIC HERE](https://www.macizotech.com/wp-content/uploads/2017/07/mongodb-logo.png) ]()
 [![INSERT YOUR GRAPHIC HERE](https://cdn.iconscout.com/icon/free/png-256/node-js-3-1174937.png) ]()
