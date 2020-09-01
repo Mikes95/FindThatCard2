@@ -14,7 +14,7 @@
 
 ## Table of Contents
 - [Clone](#Clone)
-- [Setup](#features)
+- [Setup](#Setup)
 - [Features](#Features)
 - [Technologies](#Technologies)
 
